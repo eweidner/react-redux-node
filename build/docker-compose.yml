@@ -1,5 +1,13 @@
-mike-test:
-  build: ./docker
-  ports:
-    - "3000:3000"
-  command: node server.js
+version: "2"
+
+services:
+  mongo:
+    image: 'mongo:3.0.14'
+
+  mike-test:
+    image: 'mmoore-omb-test'
+    ports:
+      - "3000:3000"
+    command: "node bin/www"
+    link: mongo
+

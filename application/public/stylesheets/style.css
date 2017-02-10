@@ -6,3 +6,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+footer {
+    width: 100%;
+    background: 0x907777;
+    height: 30px;
+}

@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<head>
+<% include headerStuff %>
+</head>
+<body>
+<% include pageHeader %>
+<% if (items.length > 0) { %>
+<ul><%
+for (var item of items) {
+  %><li><%= item.key %>:
+  <a href="/items/view?key=<%= item.key %>"><%= item.title %></a>
+  </li><%
+}
+%></ul>
+<% } %>
+<% include footer %>
+</body>
 </html>

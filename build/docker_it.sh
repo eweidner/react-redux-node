@@ -3,12 +3,17 @@
 BUILD_DIR=$(pwd)
 DOCKER_DIR=$BUILD_DIR/docker
 
-echo "Tar the application into Docker dir for copying to image"
+echo "Tar the application into Docker dir for copying to image ..."
 rm -rf $DOCKER_DIR/application.tg
-tar -c -z -v --exclude=application/node_modules -C ../ -f $DOCKER_DIR/application.tgz application/
 
-echo "Build the image with Dockerfile in docker dir"
-docker-compose build
+tar -czv --exclude=application/node_modules \
+        --exclude=application/.*  \
+        --exclude=application/tests  \
+        -C ../ -f $DOCKER_DIR/application.tgz application/
 
-rm -rf $DOCKER_DIR/application.tg
+echo "Build the image with Dockerfile in docker dir ..."
+docker build --force-rm -t mmoore-omb-test ./docker
+
+echo "Clean up ..."
+rm -rf $DOCKER_DIR/application.tgz
 
