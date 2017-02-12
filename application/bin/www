@@ -18,16 +18,25 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
+importData();
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+
+function importData() {
+    censusImport = require('../importers/census-import');
+    censusImport.importIfEmpty(function() {
+      debugger
+    });
+}
 
 /**
  * Normalize a port into a number, string, or false.

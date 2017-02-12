@@ -9,5 +9,6 @@ services:
     ports:
       - "3000:3000"
     command: "node bin/www"
-    link: mongo
+    links:
+      - "mongo:mongo"
 

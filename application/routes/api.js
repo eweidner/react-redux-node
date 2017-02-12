@@ -6,7 +6,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
+    debugger
     items.keylist()
         .then(keylist => {
         var keyPromises = [];
