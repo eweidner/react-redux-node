@@ -18,7 +18,6 @@ COPY entrypoint.sh $APP_HOME
 COPY wait_for_port.sh  $APP_HOME
 
 WORKDIR $APP_HOME
-RUN     npm install
 
 EXPOSE $WEB_PORT
 
