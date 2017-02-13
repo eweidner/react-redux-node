@@ -5,26 +5,14 @@ const CONS_COMPL_API_ENDPOINT = "/resource/jhzv-w97w.json";
 const CONS_COMPLAINT_LIMIT = 1000;
 
 
-// Found this at https://gist.github.com/mshafrir/2646763
-const STATES = {
-    "AE": "Armed Forces Europe/Canada/Mid East", "AP": "Armed Forces Pacific", "AA": "Armed Forces Americas",
-    "AL": "Alabama", "AK": "Alaska", "AS": "American Samoa", "AZ": "Arizona",
-    "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
-    "DC": "District Of Columbia", "FM": "Federated States Of Micronesia", "FL": "Florida", "GA": "Georgia", "GU": "Guam",
-    "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky",
-    "LA": "Louisiana", "ME": "Maine", "MH": "Marshall Islands", "MD": "Maryland", "MA": "Massachusetts",
-    "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska",
-    "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
-    "NC": "North Carolina", "ND": "North Dakota", "MP": "Northern Mariana Islands", "OH": "Ohio", "OK": "Oklahoma",
-    "OR": "Oregon", "PW": "Palau", "PA": "Pennsylvania", "PR": "Puerto Rico", "RI": "Rhode Island",
-    "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont",
-    "VI": "Virgin Islands", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin",
-    "WY": "Wyoming"
-}
+var dbUtils = require('../database/db-utils');
 
 
 function ConsumerComplaintsImport(address) {
+    this.working = true;
     this.complaintModel = require('../database/complaint-db');
+    this.requestsAllSent = false;
+    this.requestsNeedingToBeSaved = 0;
     this.lastEvent = null;
     clearPromise = this.complaintModel.clear();
     clearPromise.then (
@@ -38,33 +26,41 @@ function ConsumerComplaintsImport(address) {
     )
 }
 
-
-ConsumerComplaintsImport.prototype.translateState = function(stateCode) {
-    var stateName = STATES[stateCode];
-    if (stateName == null) {
-        throw new Error("Could not find state for code: " + stateCode);
-    }
-    return stateName
+ConsumerComplaintsImport.prototype.isDone = function() {
+    return ((this.requestsAllSent) && (this.requestsNeedingToBeSaved <= 0))
 }
+
+
+// ConsumerComplaintsImport.prototype.translateState = function(stateCode) {
+//     var stateName = STATES[stateCode];
+//     if (stateName == null) {
+//         throw new Error("Could not find state for code: " + stateCode);
+//     }
+//     return stateName
+// }
 
 ConsumerComplaintsImport.prototype.processRequest = function(offset, dataOut) {
     if (dataOut.length == CONS_COMPLAINT_LIMIT) {
         this.performRequest(offset + CONS_COMPLAINT_LIMIT);
+    } else {
+        this.requestsAllSent = true;
     }
+    this.requestsNeedingToBeSaved += dataOut.length;
     dataOut.forEach(function(complaint) {
         if (complaint.state != null) {
             dateParts = complaint.date_received.split("-");
-            date = dateParts[0] + "-" + dateParts[1];
             data = {
                 id:         complaint.complaint_id,
                 company:    complaint.company,
-                date:       date,
-                state:      this.translateState(complaint.state),
+                year:       parseInt(dateParts[0]),
+                month:      parseInt(dateParts[1]),
+                state:      complaint.state.toLowerCase(),
                 product:    complaint.product,
                 sub_product: complaint.sub_product
-
             };
-            this.complaintModel.create(data);
+            this.complaintModel.create(data, function() {
+                this.requestsNeedingToBeSaved--;
+            }.bind(this));
             eventDescription = "Complaint saved: " + data.date + "  " + data.state + "  " + data.company;
             this.lastEvent = eventDescription;
         }
@@ -112,9 +108,47 @@ ConsumerComplaintsImport.prototype.performRequest = function(offset) {
     req.end();
 }
 
+// census.collection((collection) => {
+//     collection.find({date: "2015-04"}).sort({pop: -1}).limit(10).toArray((err, documents) => {
+//         if (err) throw new Error("Error searching", err);
+//         console.info("Found: " + documents.length);
+//         documents.forEach((stateData) => {
+//             console.info("State: " + stateData["state"] + "  Population: " + stateData['pop']);
+//         });
+//
+//     });
+// });
 
-function onComplete(status) {
-    console.info("Done");
+
+var _complaintsImporter = null;
+
+exports.importIfEmpty = function() {
+    var complaint = require('../database/complaint-db');
+    complaint.collection((collection) => {
+
+        collection.count({}, (err, count) => {
+            if (count == 0) {
+                _complaintsImporter = new ConsumerComplaintsImport(function() {
+                    console.info("Done importing complaint records");
+                });
+            } else {
+                console.info("Complaint data saved, no import performed.");
+            }
+        });
+    });
+
 }
 
-importer = new ConsumerComplaintsImport(csvDownloadAddress);
+exports.import = function() {
+    try {
+        _complaintsImporter = new ConsumerComplaintsImport(function() {
+            console.info("Done importing complainy records");
+        });
+    } catch (err) {
+        console.error("Exception in code" + err.stack);
+    }
+}
+
+exports.inProgress = function() {
+    return ((_complaintsImporter != null) && (_complaintsImporter.isDone() == false));
+}

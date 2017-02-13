@@ -1,19 +1,35 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+    <!--<head>-->
+        <!--<% include headerStuff %>-->
+    <!--</head>-->
+    <!--<body>-->
+        <!--<% include pageHeader %>-->
+        <!--<h1>Home Page</h1>-->
+    <!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html>
-<head>
-<% include headerStuff %>
-</head>
-<body>
-<% include pageHeader %>
-<% if (items.length > 0) { %>
-<ul><%
-for (var item of items) {
-  %><li><%= item.key %>:
-  <a href="/items/view?key=<%= item.key %>"><%= item.title %></a>
-  </li><%
-}
-%></ul>
-<% } %>
-<% include footer %>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Census and Complaints</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+    <body>
+        <div id="root">
+            <!-- This div's content will be managed by React. -->
+        </div>
+
+        <div id="main">
+            Hello
+            <div onclick="doSomething();">Click me!</div>
+        </div>
+        <script src="/javascripts/jquery-3.1.1.min.js"></script>
+        <script src="/javascripts/main.js"></script>
+        <script src="/javascripts/fetch.js"></script>
+
+    </body>
 </html>

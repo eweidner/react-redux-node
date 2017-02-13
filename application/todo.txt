@@ -1,0 +1,7 @@
+* Census Import doesn't change status to done after finishing import.
+* Add warning about imports in progress to UI header.
+* Make import api calls into POSTs or PUTs.
+* For months missing population data, spread interpolate pop growth of missing months instead of showing it when pop is found again.
+* Combine connection, collection methods for company, census, complaints.
+* Provide company id in complaints (build company db with id, name).
+

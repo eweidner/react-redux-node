@@ -1,4 +1,4 @@
-var censusKey = "54e58ceb2cbb922837bde9d29ff87936a1eff60c";
+const censusKey = "54e58ceb2cbb922837bde9d29ff87936a1eff60c";
 
 // 2015 - 2016
 // http://api.census.gov/data/2016/pep/components?get=BIRTHS,DEATHS,GEONAME&for=state:*&PERIOD=1&key=54e58ceb2cbb922837bde9d29ff87936a1eff60c
@@ -17,6 +17,44 @@ var censusKey = "54e58ceb2cbb922837bde9d29ff87936a1eff60c";
 
 
 // 2012 - none of the above works
+
+dbUtils = require('../database/db-utils');
+
+const START_YEAR = 2013;
+const END_YEAR = 2016;
+
+
+var _censusImporter = null;
+
+exports.importIfEmpty = function() {
+    censusModel = require('../database/census-db');
+    censusModel.collection((collection) => {
+        collection.count({ state: 'co'}, (err, count) => {
+            if (count == 0) {
+                _censusImporter = new CensusImport(() => {
+                    console.info("Done importing records");
+                });
+
+            } else {
+                console.info("Census data present - no import performed.");
+            }
+        });
+    });
+}
+
+exports.import = function() {
+    try {
+        _censusImporter = new CensusImport(() => {
+            console.info("Done importing records");
+        });
+    } catch (err) {
+        console.error("Exception in code" + err.stack);
+    }
+}
+
+exports.inProgress = function() {
+    return ((_censusImporter != null) && (_censusImporter.isDone() == false));
+}
 
 
 function CensusImport(callback) {
@@ -63,50 +101,37 @@ CensusImport.prototype.submitApiRequests = function(callback) {
 
 CensusImport.prototype.createStateHash = function(state) {
     this.dataHash[state] = new Object();
-    for (var year = 2013; year <= 2016; year++) {
+    for (var year = START_YEAR; year <= END_YEAR; year++) {
+        this.dataHash[state][year] = new Object();
         for (var month = 1; month <= 12; month++) {
-            this.dataHash[state][this.monthKey(year, month)] = new Object();
+            this.dataHash[state][year][month] = new Object();
             this.numberOfRecordsToSave++;
-
         }
     }
 }
 
 CensusImport.prototype.processStateRow = function(year, month, fields, stateRow) {
     var dataHash = this.dataHash;
-
     indexOfState = fields.indexOf("geoname");
     if (indexOfState < 0) indexOfState = fields.indexOf("stname");
-    state = stateRow[indexOfState];
+    var state = stateRow[indexOfState];
 
     //  Some years have states like: 'Alabama, East South Central, South, United States'
     state = state.split(",")[0];
+    state = dbUtils.stateNameToCode(state).toLowerCase();
 
     if (dataHash[state] == null) {
         this.createStateHash(state);
     }
 
-    var monthYear = this.monthKey(year, month);
-    // if (dataHash[state][monthYear] == null) {
-    //     dataHash[state][monthYear] = new Object();
-    // }
+    var monthYear = dbUtils.encodeYearMonth(year, month);
     stateRow.forEach(function(column, index) {
         columnName = fields[index];
         if ((column) && (columnName != "geoname") && (columnName != "stname") && (columnName != "dom") && (columnName != "period") && (columnName != "state") && (columnName != "date")) {
-            dataHash[state][monthYear][columnName] = parseInt(column);
+            dataHash[state][year][month][columnName] = parseInt(column);
         }
     });
 }
-
-CensusImport.prototype.monthKey = function(year, month) {
-    monthYear = "" + month;
-    while (monthYear.length < 2) {
-        monthYear = "0" + monthYear;
-    }
-    monthYear = "" + year + "-" + monthYear;
-    return monthYear;
-}
-
 
 CensusImport.prototype.processRequest = function(year, month, dataOut) {
     fields = [];
@@ -167,7 +192,6 @@ CensusImport.prototype.performRequest = function(request) {
             });
 
             res.on('end', function() {
-                //console.info("Processing: " + responseString);
                 var responseObject = JSON.parse(responseString);
                 this.processRequest(request.year, request.month, responseObject);
             }.bind(this));
@@ -192,21 +216,32 @@ CensusImport.prototype.fillInMissingData = function(data, fieldName) {
     for (var key in data) {
         stateData = data[key];
         var lastFields = new Object();
-        for (var year = 2013; year <= 2016; year++) {
+        lastFields['popgrowth'] = 0;
+        for (var year = START_YEAR; year <= END_YEAR; year++) {
             for (var month = 1; month <= 12; month++) {
-                var monthKey = this.monthKey(year, month);
-                var monthData = stateData[monthKey];
-                for (var fieldKey in monthData) {
-                    if (monthData[fieldKey]) {
-                        lastFields[fieldKey] = monthData[fieldKey];
-                    }
-                }
+                var monthData = stateData[year][month];
+                var previousPopulation = lastFields['pop'];
+                var previousPopGrowth = lastFields['popgrowth'];
+                var monthPopulation = monthData['pop'];
+
                 for (var fieldKey in lastFields) {
                     if (!monthData[fieldKey]) {
                         monthData[fieldKey] = lastFields[fieldKey];
                     }
                 }
+                if ((previousPopulation) && (monthPopulation)) {
+                    monthData['popgrowth'] = monthPopulation - previousPopulation;
+                }
 
+                //  Try to calculate population growth, if month missing population, stick with last months pop growth.
+                if ((previousPopulation) && (monthPopulation == null)) {
+                    monthData['pop'] = previousPopulation + lastFields['popgrowth'];
+                }
+                for (var fieldKey in monthData) {
+                    if (monthData[fieldKey]) {
+                        lastFields[fieldKey] = monthData[fieldKey];
+                    }
+                }
             }
         }
     }
@@ -216,50 +251,28 @@ CensusImport.prototype.fillInMissingData = function(data, fieldName) {
 CensusImport.prototype.writeToDatabase = function(censusImport) {
     censusModel = require('../database/census-db');
     dataHash = this.dataHash;
+    var importer = this;
     censusModel.clear(function(result) {
         for (var stateKey in dataHash) {
             stateData = dataHash[stateKey];
-            dateKeys = Object.keys(stateData);
-            dateKeys.forEach( function(dateKey) {
-                monthData = stateData[dateKey];
-                monthData["state"] = stateKey;
-                monthData["date"] = dateKey;
-                censusModel.create(monthData, function() {
-                    console.info("Saved record: (" + monthData.state + monthData.date + ").  " + this.numberOfRecordsToSave + " remaining.");
-                    this.numberOfRecordsToSave--;
-                    if (this.numberOfRecordsToSave == 0) {
-                        this.callback(this);
-                    }
-                }.bind(this));
-            }.bind(this));
+            for (var year = START_YEAR; year <= END_YEAR; year++) {
+                for (var month = 1; month <= 12; month++) {
+                    var monthData = stateData[year][month];
+                    monthData["state"] = stateKey;
+                    monthData["year"] = year;
+                    monthData["month"] = month;
+                    censusModel.create(monthData, function(err, record) {
+                        importer.numberOfRecordsToSave--;
+                        if (importer.numberOfRecordsToSave == 0) {
+                            importer.callback(this);
+                        }
+                    });
+                };
+            };
         }
     }.bind(this));
 }
 
-
-exports.importIfEmpty = function() {
-    censusModel = require('../database/census-db');
-    censusModel.find({ state: 'Colorado'}, function(err, documents) {
-        if (err) throw new Error("Error searching", err);
-        if (documents.length == 0) {
-            new CensusImport.new(function() {
-                console.info("Done importing records");
-            });
-        } else {
-            console.info("Census data present - no import performed.");
-        }
-    });
-}
-
-exports.import = function() {
-    try {
-        new CensusImport(function() {
-            console.info("Done importing records");
-        });
-    } catch (err) {
-        console.error("Exception in code" + err.stack);
-    }
-}
 
 
 
