@@ -16,16 +16,6 @@ router.get('/', function(req, res, next) {
 
 // /api/complaints endpoint
 
-router.get('/complaints/import/status', function(req, res, next) {
-    var importer = require('../importers/consumer-complaints-import');
-    res.json({importing: importer.inProgress()});
-});
-
-router.get('/complaints/import', function(req, res, next) {
-    var importer = require('../importers/consumer-complaints-import');
-    importer.import();
-    res.json({importing: true});
-});
 
 var complaintsQueries = require('../database/complaint-queries');
 
@@ -39,27 +29,38 @@ router.get('/complaints/states', function(req, res, next) {
         month :     parseInt(req.query.month),
         months :    parseInt(req.query.months),
         company :   req.query.company,
-        product :   req.query.product
+        product :   req.query.product,
+        limit: 10
     }
+    if (req.query.limit) reqData.limit = parseInt(req.query.limit);
     complaintsQueries.states(reqData, (documents) => {
-        res.json({states: documents});
+        res.json({states: documents, query: reqData});
     });
 });
+
+/*
+ *  Find top products with complaints in a state (or nation, if state is not passed).
+ *  Example: /api/complaints/products?year=2016&month=1&months=12&state=ny
+ */
+router.get('/complaints/products', function(req, res, next) {
+    var reqData = {
+        year :      parseInt(req.query.year),
+        month :     parseInt(req.query.month),
+        months :    parseInt(req.query.months),
+        state :     req.query.state,
+        limit: 10
+    }
+    if (req.query.limit) reqData.limit = parseInt(req.query.limit);
+    complaintsQueries.products(reqData, (documents) => {
+        res.json({products: documents, query: reqData});
+    });
+});
+
 
 
 // ****************************************************************
 // /api/census endpoint
 // ****************************************************************
-router.get('/census/import/status', function(req, res, next) {
-    var importer = require('../importers/census-import');
-    res.json({importing: importer.inProgress()});
-});
-
-router.get('/census/import', function(req, res, next) {
-    var importer = require('../importers/census-import');
-    importer.import();
-    res.json({importing: true});
-});
 
 
 var censusQueries = require('../database/census-queries');
@@ -69,14 +70,53 @@ var censusQueries = require('../database/census-queries');
  *  Example: http://localhost:3000/api/census/topstates?year=2015&month=5&field=popgrowth&limit=10
  */
 router.get('/census/topstates/', function(req, res, next) {
-    var limit = parseInt(req.query.limit);
-    var year = parseInt(req.query.year);
-    var month = parseInt(req.query.month);
-    censusQueries.topStates(year, month, req.query.field, limit, (documents) => {
-        res.json({states: documents});
+    var reqData = {
+        limit: parseInt(req.query.limit),
+        year: parseInt(req.query.year),
+        month: parseInt(req.query.month),
+        sort_field:  req.query.field
+    }
+    censusQueries.topStates(reqData, (documents) => {
+        res.json({states: documents,  query: reqData});
     });
 });
 
+
+/*
+ *  Start import of census data.
+ */
+router.get('/census/import', function(req, res, next) {
+    var importer = require('../importers/census-import');
+    importer.import();
+    res.json({importing: true});
+});
+
+/*
+ *  Status of import of census data.
+ */
+router.get('/census/import/status', function(req, res, next) {
+    var importer = require('../importers/census-import');
+    res.json({importing: importer.inProgress()});
+});
+
+
+
+/*
+ *  Start import of complaints data.
+ */
+router.get('/complaints/import', function(req, res, next) {
+    var importer = require('../importers/consumer-complaints-import');
+    importer.import();
+    res.json({importing: true});
+});
+
+/*
+ *  Status of import of complaints data.
+ */
+router.get('/complaints/import/status', function(req, res, next) {
+    var importer = require('../importers/consumer-complaints-import');
+    res.json({importing: importer.inProgress()});
+});
 
 
 

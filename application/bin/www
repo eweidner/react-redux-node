@@ -23,9 +23,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-var _censusImport = require('../importers/census-import');
-var _complaintImport = require('../importers/consumer-complaints-import');
-importData(_censusImport, _complaintImport);
+establishDataIndexesAndImportIfNeeded();
 
 server.listen(port);
 server.on('error', onError);
@@ -35,9 +33,18 @@ server.on('listening', onListening);
 /*
  * Start importation from Census and Cons Complaints API if databases is empty.
  */
-function importData(censusImport, complaintImport) {
+function importDataIfNeeded(censusImport, complaintImport) {
     censusImport.importIfEmpty();
     complaintImport.importIfEmpty();
+}
+
+function establishDataIndexesAndImportIfNeeded() {
+    complaintDb = require('../database/complaint-db');
+    complaintDb.ensureIndexes(() => {
+        var _censusImport = require('../importers/census-import');
+        var _complaintImport = require('../importers/consumer-complaints-import');
+        importDataIfNeeded(_censusImport, _complaintImport);
+    });
 }
 
 /**

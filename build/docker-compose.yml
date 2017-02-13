@@ -2,13 +2,15 @@ version: "2"
 
 services:
   mongo:
-    image: 'mongo:3.0.14'
+    image: 'mongo:3.4.2'
+    ports:
+      - "27017:27017"
 
   mike-test:
-    image: 'mmoore-omb-test'
+    image: 'omb:latest'
+    command: "node bin/www"
     ports:
       - "3000:3000"
-    command: "node bin/www"
     links:
       - "mongo:mongo"
 

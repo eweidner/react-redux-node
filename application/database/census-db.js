@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const CENSUS_COLLECTION_NAME = "census";
 
 var dbConnection = require('./db-connection')
-
+var dbUtils = require('./db-utils');
 
 exports.clear = function(callback) {
     var collectionName = CENSUS_COLLECTION_NAME;
@@ -25,6 +25,7 @@ exports.clear = function(callback) {
 exports.create = function(dataHash, callback) {
     dbConnection.connection().then( db => {
         var collection = db.collection(CENSUS_COLLECTION_NAME);
+        dataHash['date'] = dbUtils.encodeYearMonth(dataHash.year, dataHash.month);
         collection.insertOne(dataHash, function(err, record) {
             callback(err, record);
             }

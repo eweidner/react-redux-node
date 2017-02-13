@@ -9,6 +9,7 @@ const COMPLAINT_COLLECTION_NAME = "complaints";
 var db;
 
 var dbConnection = require('./db-connection')
+var dbUtils = require('./db-utils');
 
 
 
@@ -26,7 +27,24 @@ exports.clear = function(callback) {
     });
 }
 
+exports.ensureIndexes = function(callback) {
+    exports.collection((collection) => {
+        console.info("Creating indexes on complaints collection...");
+        collection.ensureIndex({date: 1}, () => {
+            collection.ensureIndex({state: 1}, () => {
+                collection.ensureIndex({product: 1}, () => {
+                    collection.ensureIndex({company: 1}, () => {
+                        console.info("Indexing finished on complaints collection");
+                        callback();
+                    });
+                });
+            });
+        });
+    });
+}
+
 exports.create = function(dataHash, callback) {
+    dataHash['date'] = dbUtils.encodeYearMonth(dataHash.year, dataHash.month);
     dbConnection.connection().then( db => {
         var collection = db.collection(COMPLAINT_COLLECTION_NAME);
         collection.insertOne(dataHash, function(err, record) {

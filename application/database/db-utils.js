@@ -8,6 +8,17 @@ exports.encodeYearMonth = function(year, month) {
     return monthYear;
 }
 
+exports.encodeYearMonthPlusMonths = function(year, month, months) {
+    var newMonth = month + (months - 1);
+    var newYear = year;
+    while (newMonth > 12) {
+        newYear += 1;
+        newMonth -= 12;
+    }
+    return exports.encodeYearMonth(newYear, newMonth);
+}
+
+
 
 // Found this at https://gist.github.com/mshafrir/2646763
 const STATES = {

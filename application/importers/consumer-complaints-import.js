@@ -4,9 +4,7 @@ const CONS_COMPL_API_HOST = "data.consumerfinance.gov";
 const CONS_COMPL_API_ENDPOINT = "/resource/jhzv-w97w.json";
 const CONS_COMPLAINT_LIMIT = 1000;
 
-
 var dbUtils = require('../database/db-utils');
-
 
 var _complaintsImporter = null;
 
@@ -116,7 +114,7 @@ ConsumerComplaintsImport.prototype.performRequest = function(offset) {
     };
     var req = http.request(options, function(res) {
         res.setEncoding('utf-8');
-        console.info("RESPONSE - " + options.path + " Status code: " + res.statusCode);
+        console.info("Consumer complaint response: - " + options.path + " Status code: " + res.statusCode);
         var responseString = '';
         if (res.statusCode == 200) {
             res.on('data', function(data) {
