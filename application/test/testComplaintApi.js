@@ -5,7 +5,6 @@ let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
 chai.use(chaiHttp);
-debugger
 
 var complaintDb = require('../database/complaint-db');
 
@@ -13,12 +12,11 @@ function createComplaintRecords(dataArray, callback) {
     var numberToCreate = dataArray.length;
     dataArray.forEach(function(data) {
         complaintDb.create(data, function (err, record) {
-            if (err) throw err
+            if (err) throw err;
             numberToCreate--;
             if (numberToCreate == 0) callback();
         });
     });
-
 }
 
 
@@ -37,7 +35,7 @@ describe('Consumer Complaints API', () => {
                 {"id" : "2", "company" : "ABC Mortgage", "year" : 2015, "month" : 9,
                     "state" : "nm", "product" : "Credit card", "sub_product" : null }
             ]
-            createCensusRecords(testData, () => {
+            createComplaintRecords(testData, () => {
                 done();
             });
         });
@@ -54,6 +52,7 @@ describe('Consumer Complaints API', () => {
                     states = res.body.states;
                     // NM is disqualified because company is ABC Mortgate
                     // CO has only a count of one because the 2014/9 BofA entry is out of range.
+                    debugger
                     states.length.should.eq(2);
                     states[0].state.should.eq("tx");
                     states[0].state_name.should.eq("Texas");

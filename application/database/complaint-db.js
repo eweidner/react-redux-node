@@ -10,27 +10,29 @@ var db;
 
 var dbConnection = require('./db-connection')
 
-exports.clear = function() {
-    return new Promise((resolve, reject) => {
-        dbConnection.connection().then( db => {
-            var collection = db.collection(COMPLAINT_COLLECTION_NAME);
-            collection.drop(function(err, reply) {
-                if (err) return resolve(null);
-                db.createCollection(COMPLAINT_COLLECTION_NAME);
-                resolve(null);
-            });
+
+
+exports.clear = function(callback) {
+    var collectionName = COMPLAINT_COLLECTION_NAME;
+    dbConnection.connection().then( db => {
+        var collection = db.collection(collectionName);
+        collection.remove({}, function(err, result) {
+            if (err) {
+                console.log(err);
+                throw Error(err.message)
+            }
+            callback(result);
         });
     });
 }
 
 exports.create = function(dataHash, callback) {
-    return dbConnection.connection()
-        .then( db => {
-            var collection = db.collection(COMPLAINT_COLLECTION_NAME);
-            return collection.insertOne(dataHash)
-                .then( result => {
-                    callback(dataHash);
-        });
+    dbConnection.connection().then( db => {
+        var collection = db.collection(COMPLAINT_COLLECTION_NAME);
+        collection.insertOne(dataHash, function(err, record) {
+                callback(err, record);
+            }
+        );
     });
 };
 

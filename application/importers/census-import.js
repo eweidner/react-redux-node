@@ -27,8 +27,8 @@ const END_YEAR = 2016;
 var _censusImporter = null;
 
 exports.importIfEmpty = function() {
-    censusModel = require('../database/census-db');
-    censusModel.collection((collection) => {
+    censusDb = require('../database/census-db');
+    censusDb.collection((collection) => {
         collection.count({ state: 'co'}, (err, count) => {
             if (count == 0) {
                 _censusImporter = new CensusImport(() => {
@@ -58,20 +58,13 @@ exports.inProgress = function() {
 
 
 function CensusImport(callback) {
-    this.censusModel = require('../database/complaint-db');
-    clearPromise = this.censusModel.clear();
-    clearPromise.then (
-        a => {
-            this.performRequest(0);
-    })
-    clearPromise.catch ( function(reason) {
-            throw new Error("Clear failed: " + reason);
-        }
-    )
-
-    this.lastEvent = null;
-    this.submitApiRequests(callback);
+    this.censusDb = require('../database/complaint-db');
+    clearPromise = this.censusDb.clear(() => {
+        this.lastEvent = null;
+        this.submitApiRequests(callback);
+    });
 }
+
 
 CensusImport.prototype.submitApiRequests = function(callback) {
     this.callback = callback;
@@ -249,10 +242,10 @@ CensusImport.prototype.fillInMissingData = function(data, fieldName) {
 
 
 CensusImport.prototype.writeToDatabase = function(censusImport) {
-    censusModel = require('../database/census-db');
+    censusDb = require('../database/census-db');
     dataHash = this.dataHash;
     var importer = this;
-    censusModel.clear(function(result) {
+    censusDb.clear(function(result) {
         for (var stateKey in dataHash) {
             stateData = dataHash[stateKey];
             for (var year = START_YEAR; year <= END_YEAR; year++) {
@@ -261,7 +254,7 @@ CensusImport.prototype.writeToDatabase = function(censusImport) {
                     monthData["state"] = stateKey;
                     monthData["year"] = year;
                     monthData["month"] = month;
-                    censusModel.create(monthData, function(err, record) {
+                    censusDb.create(monthData, function(err, record) {
                         importer.numberOfRecordsToSave--;
                         if (importer.numberOfRecordsToSave == 0) {
                             importer.callback(this);

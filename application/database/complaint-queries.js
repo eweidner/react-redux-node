@@ -8,18 +8,25 @@ var url = "mongodb://mongo/" + db_name;
 const db = require('monk')(url);
 const complaintsMonk = db.get('complaints');
 
-debugger
+
+// sample.col.group(
+//     ["status"],
+//     {},
+//     { "count": 0 },
+//     "function (obj,prev) { prev.count++; }",
+//     function(err,docs) {
+//         if (err) console.log(err);
+//         console.log( docs );
+//     }
+// );
 
 exports.states = function(params, callback) {
-    debugger
-    complaintsMonk.collection((collection) => {
+    var aggregation = [];
+    if (params.company) aggregation.push({ $match: {company: params.company} } );
 
-        var sortHash = new Object()
-        sortHash[sortField] = -1;
-        console.info("Date key: " + dateKey);
-        collection.find({date: dateKey}).sort(sortHash).limit(limit).toArray((err, documents) => {
-            if (err) throw new Error("Error searching", err);
-            callback(documents);
-        });
-    });
+    debugger
+    complaintsMonk.aggregate(aggregation).then((res) => {
+        debugger
+    })
+
 }

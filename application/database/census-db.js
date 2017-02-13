@@ -7,6 +7,7 @@ const CENSUS_COLLECTION_NAME = "census";
 
 var dbConnection = require('./db-connection')
 
+
 exports.clear = function(callback) {
     var collectionName = CENSUS_COLLECTION_NAME;
     dbConnection.connection().then( db => {
@@ -23,11 +24,11 @@ exports.clear = function(callback) {
 
 exports.create = function(dataHash, callback) {
     dbConnection.connection().then( db => {
-            var collection = db.collection(CENSUS_COLLECTION_NAME);
-            collection.insertOne(dataHash, function(err, record) {
-                callback(err, record);
-                }
-            );
+        var collection = db.collection(CENSUS_COLLECTION_NAME);
+        collection.insertOne(dataHash, function(err, record) {
+            callback(err, record);
+            }
+        );
     });
 };
 

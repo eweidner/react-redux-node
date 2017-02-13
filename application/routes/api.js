@@ -35,12 +35,11 @@ var complaintsQueries = require('../database/complaint-queries');
  */
 router.get('/complaints/states', function(req, res, next) {
     var reqData = {
-        limit :     parseInt(req.query.limit),
         year :      parseInt(req.query.year),
         month :     parseInt(req.query.month),
         months :    parseInt(req.query.months),
-        company :   parseInt(req.query.company),
-        product :   parseInt(req.query.product)
+        company :   req.query.company,
+        product :   req.query.product
     }
     complaintsQueries.states(reqData, (documents) => {
         res.json({states: documents});
