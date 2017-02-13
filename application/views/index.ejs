@@ -5,10 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Census and Complaints</title>
         <link rel="stylesheet" href="/stylesheets/style.css">
+        <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+        <script src="/javascripts/main.js"></script>
+        <script src="/javascripts/fetch.js"></script>
     </head>
+
     <body>
-        <div id="root">
+        <div id="header">
             <!-- This div's content will be managed by React. -->
+        </div>
+
+        <div id="state_select">
         </div>
 
         <div id="main">
@@ -17,7 +27,24 @@
             <a href="http://localhost:3000/api/complaints/states?year=2015&month=7&months=12&company=Bank+of+America">Top ten states with Bank of Amer Complaints</a><br/>
             <a href="http://localhost:3000/api/complaints/products?year=2013&month=1&months=50&limit=10">Products with most complaints nationwide</a><br/>
         </div>
-        <script src="/javascripts/main.js"></script>
-        <script src="/javascripts/fetch.js"></script>
+
+        <script type="text/babel">
+
+            ReactDOM.render(
+                    <div>
+                        <h1>Complaints and Census</h1>
+                    </div>,
+                document.getElementById('header')
+            );
+
+            ReactDOM.render(
+                    <div>
+                        <h2>Select State</h2>
+                    </div>,
+                document.getElementById('header')
+            );
+
+        </script>
+
     </body>
 </html>

@@ -7,7 +7,7 @@ services:
       - "27017"
 
   mike-test:
-    image: 'omb:latest'
+    image: 'mijomoore/omb:2.0'
     command: "node bin/www"
     ports:
       - "3000:3000"

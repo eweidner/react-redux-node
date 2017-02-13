@@ -19,6 +19,18 @@ router.get('/', function(req, res, next) {
 
 var complaintsQueries = require('../database/complaint-queries');
 
+router.get('/states', function(req, res, next) {
+    var dbUtils = require('../database/db-utils');
+
+    if (req.query.limit) reqData.limit = parseInt(req.query.limit);
+    complaintsQueries.states(reqData, (documents) => {
+        res.json({states: dbUtils.stateList()});
+    });
+});
+
+
+
+
 /*
  *  Find states with complaints that match either a particular company or particular product over period of time.
  *  Example: /api/complaints/states?year=2015&month=6&months=12&company=Bank+of+America
@@ -55,7 +67,6 @@ router.get('/complaints/products', function(req, res, next) {
         res.json({products: documents, query: reqData});
     });
 });
-
 
 
 // ****************************************************************

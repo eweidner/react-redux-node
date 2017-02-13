@@ -2,7 +2,7 @@ const csvDownloadAddress = "https://data.consumerfinance.gov/api/views/s6ew-h6mp
 const CONS_COMPLAINT_TOKEN = "OaSXPtEbfqCcNwLKRyYjhogng";
 const CONS_COMPL_API_HOST = "data.consumerfinance.gov";
 const CONS_COMPL_API_ENDPOINT = "/resource/jhzv-w97w.json";
-const CONS_COMPLAINT_LIMIT = 1000;
+const CONS_COMPLAINT_LIMIT = 200;
 
 var dbUtils = require('../database/db-utils');
 

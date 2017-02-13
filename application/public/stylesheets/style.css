@@ -12,3 +12,8 @@ footer {
     background: 0x907777;
     height: 30px;
 }
+
+.header {
+    width: 100%;
+    background: 0x907777;
+}

@@ -57,7 +57,7 @@ describe('Consumer Complaints API', () => {
 
         it('it should find counts for all states that have had complaints against product during a specified period of time', (done) => {
             chai.request(server)
-            // Period starts on 2015/6 and extends 12 months
+                // Period starts on 2015/7 and extends 12 months
                 .get('/api/complaints/states?year=2015&month=7&months=12&product=Payday+loan')
                 .end((err, res) => {
                     res.should.have.status(200);
