@@ -73,7 +73,6 @@ exports.products = function(params, callback) {
     aggregation.push({$limit: params.limit});
     aggregation.push({$sort: {"count": -1}});
     count:{$sum:1}
-
     complaintsMonk.aggregate(aggregation).then((res) => {
         var prettyResults = []
         res.forEach( (result) => {

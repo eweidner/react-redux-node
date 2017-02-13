@@ -4,7 +4,7 @@ services:
   mongo:
     image: 'mongo:3.4.2'
     ports:
-      - "27017:27017"
+      - "27017"
 
   mike-test:
     image: 'omb:latest'

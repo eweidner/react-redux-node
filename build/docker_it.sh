@@ -12,7 +12,8 @@ tar -czv --exclude=application/node_modules \
         -C ../ -f $DOCKER_DIR/application.tgz application/
 
 echo "Build the image with Dockerfile in docker dir ..."
-docker build --force-rm -t omb ./docker
+docker build --force-rm -t mijomoore/omb:latest ./docker
+docker push mijomoore/omb:latest
 
 echo "Clean up ..."
 rm -rf $DOCKER_DIR/application.tgz
