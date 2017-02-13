@@ -69,8 +69,9 @@ exports.addStateNamesToData = function(dataArray) {
 
 exports.stateList = function() {
     var states = [];
-    for (var stateCode in dataHash) {
-        var stateName = dataHash[stateKey];
+    for (var stateCode in STATES) {
+        var stateName = STATES[stateCode];
         states.push({code: stateCode.toLowerCase(), name: stateName});
     }
+    return(states);
 }

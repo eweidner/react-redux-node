@@ -20,12 +20,14 @@ router.get('/', function(req, res, next) {
 var complaintsQueries = require('../database/complaint-queries');
 
 router.get('/states', function(req, res, next) {
-    var dbUtils = require('../database/db-utils');
-
-    if (req.query.limit) reqData.limit = parseInt(req.query.limit);
-    complaintsQueries.states(reqData, (documents) => {
+    try {
+        var dbUtils = require('../database/db-utils');
         res.json({states: dbUtils.stateList()});
-    });
+    } catch(err) {
+        console.error("Error finding states: " + err.message);
+        console.error("Error finding states: " + err.fullStackTrace);
+        throw err;
+    }
 });
 
 

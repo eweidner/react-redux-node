@@ -19,5 +19,18 @@ function withCompanies(callback) {
         console.error("Error occurred: " + err.message);
         alert("Error occurred: " + err.message);
     });
-
  }
+
+
+function doFillStateCombo(comboId, statesJson) {
+
+}
+
+function startFillStateCombo(comboId) {
+    return dispatch => {
+        dispatch(requestPosts(subreddit))
+        return fetch(`/api/states`)
+            .then(response => response.json())
+            .then(json => dispatch(doFillStateCombo(comboId, json)))
+    }
+}
