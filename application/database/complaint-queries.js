@@ -18,12 +18,12 @@ exports.states = function(params, callback) {
     var aggregation = [];
 
     // Fields that will be processes in aggregation pipeline.
-    project = {date: true, state: true};
+    var project = {date: true, state: true};
     if (params.company) project['company'] = true;
     if (params.product) project['product'] = true;
     aggregation.push({ $project: project });
 
-    matcher = {
+    var matcher = {
         date: {$gte: minDate, $lte: maxDate}
     }
     if (params.company) matcher['company'] = params.company;
@@ -62,10 +62,10 @@ exports.products = function(params, callback) {
     var aggregation = [];
 
     // Fields that will be processes in aggregation pipeline.
-    project = {date: true, state: true, product: true};
+    var project = {date: true, state: true, product: true};
     aggregation.push({ $project: project });
 
-    matcher = {
+    var matcher = {
         date: {$gte: minDate, $lte: maxDate}
     }
     if (params.state) matcher['state'] = params.state;
