@@ -7,8 +7,14 @@
     "test": "node ./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
+    "body-parser": "^1.16.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.5",
     "express": "^4.14.1",
-    "monk": "^4.0.0"
+    "monk": "^4.0.0",
+    "morgan": "^1.8.1",
+    "react": "^15.4.2",
+    "serve-favicon": "^2.3.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
