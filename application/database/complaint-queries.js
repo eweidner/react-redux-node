@@ -75,11 +75,13 @@ exports.products = function(params, callback) {
     count:{$sum:1}
     complaintsMonk.aggregate(aggregation).then((res) => {
         var prettyResults = []
-        res.forEach( (result) => {
+        res.forEach((result) => {
             prettyResults.push({product: result._id, count: result.count});
         });
         callback(prettyResults);
-    })
+    }).catch(function(err) {
+        throw err;
+    });
 
 }
 
