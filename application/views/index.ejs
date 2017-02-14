@@ -5,27 +5,38 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Census and Complaints</title>
         <link rel="stylesheet" href="/stylesheets/style.css">
-        <script src="https://unpkg.com/react@latest/dist/react.js"></script>
-        <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
-        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 
-        <!--<script src="/javascripts/fetch.js"></script>-->
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/JSXTransformer.js"></script>-->
+        <!--<script src="/javascripts/container/ApiUtils.js"/>-->
+        <!--<script src="/javascripts/container/connector.js"/>-->
+        <script src="/javascripts/react/react.js"></script>
+        <script src="/javascripts/react/react-dom.js"></script>
+        <script src="/javascripts/react/browser.js"></script>
+
     </head>
 
     <body>
         <div id="dynamic_page">
         </div>
 
+        <div id="app">
+        </div>
+
         <div id="main">
+            <a href="http://localhost:3000/api/states">List of all states and state codes</a><br/>
             <a href="http://localhost:3000/api/census/topstates?year=2016&month=5&field=births&limit=3">Top states for births</a><br/>
             <a href="http://localhost:3000/api/complaints/states?year=2015&month=7&months=12&product=Payday+loan">Top ten states with Payday Loan Complaints</a><br/>
-            <a href="http://localhost:3000/api/complaints/states?year=2015&month=7&months=12&company=Bank+of+America">Top ten states with Bank of Amer Complaints</a><br/>
+            <a href="http://localhost:3000/api/complaints/states?year=2015&month=7&months=12&company=Bank+of+America">Top ten states with Bank of America Complaints</a><br/>
             <a href="http://localhost:3000/api/complaints/products?year=2013&month=1&months=50&limit=10">Products with most complaints nationwide</a><br/>
         </div>
 
-        <script src="/javascripts/container/ApiUtils.js"/>
-        <script type="text/babel" src="/javascripts/container/connector.js"/>
+        <!--<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>-->
+        <!--<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>-->
+        <!--<script src="http://requirejs.org/docs/release/2.2.0/minified/require.js"></script>-->
+        <!--<script src="https://unpkg.com/react@15/dist/react.js"></script>-->
+        <!--<script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>-->
         <script type="text/babel" src="/javascripts/presentation/ui.js"/>
+
 
     </body>
 </html>
