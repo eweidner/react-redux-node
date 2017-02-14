@@ -1,7 +1,9 @@
+"use strict"; 
+
 var complaints = require('./complaint-db');
 var dbUtils = require('./db-utils');
 
-dbConnections = require('./db-connection');
+var dbConnections = require('./db-connection');
 var db_name = dbConnections.findDbNameForEnv();
 var url = "mongodb://mongo/" + db_name;
 
@@ -38,14 +40,18 @@ exports.states = function(params, callback) {
     aggregation.push({$sort: {"count": -1}});
     count:{$sum:1}
 
+    console.info("Performing state query aggregation.");
     complaintsMonk.aggregate(aggregation).then((res) => {
-        var prettyResults = []
+        var prettyResults = [];
         res.forEach( (result) => {
             prettyResults.push({state: result._id, count: result.count});
         });
         dbUtils.addStateNamesToData(prettyResults);
         callback(prettyResults);
-    })
+    }).catch(function(err) {
+        console.error("Exception with product aggregate: " + err.message);
+        throw err;
+    });
 }
 
 
@@ -73,13 +79,16 @@ exports.products = function(params, callback) {
     aggregation.push({$limit: params.limit});
     aggregation.push({$sort: {"count": -1}});
     count:{$sum:1}
+    
+    console.info("Performing product query aggregation.");
     complaintsMonk.aggregate(aggregation).then((res) => {
-        var prettyResults = []
+        var prettyResults = [];
         res.forEach((result) => {
             prettyResults.push({product: result._id, count: result.count});
         });
         callback(prettyResults);
     }).catch(function(err) {
+        console.error("Exception with product aggregate: " + err.message);
         throw err;
     });
 
