@@ -8,6 +8,9 @@ const error = require('debug')('omb:error');
 exports.findDbNameForEnv = function() {
     if (process.env.NODE_ENV == 'test') {
         return "omb_test";
+    } else if (process.env.NODE_ENV == 'development') {
+        return "omb";
+
     } else if (process.env.NODE_ENV == 'production') {
         return "omb";
     } else {

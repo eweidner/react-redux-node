@@ -9,17 +9,11 @@
         <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
         <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 
-        <script src="/javascripts/main.js"></script>
-        <script src="/javascripts/fetch.js"></script>
+        <!--<script src="/javascripts/fetch.js"></script>-->
     </head>
 
     <body>
-        <div id="header">
-            <!-- This div's content will be managed by React. -->
-        </div>
-
-        <div id="state_select">
-
+        <div id="dynamic_page">
         </div>
 
         <div id="main">
@@ -29,23 +23,9 @@
             <a href="http://localhost:3000/api/complaints/products?year=2013&month=1&months=50&limit=10">Products with most complaints nationwide</a><br/>
         </div>
 
-        <script type="text/babel">
-
-            ReactDOM.render(
-                    <div>
-                        <h1>Complaints and Census</h1>
-                    </div>,
-                document.getElementById('header')
-            );
-
-            ReactDOM.render(
-                    <div>
-                        <h2>Select State</h2>
-                    </div>,
-                document.getElementById('header')
-            );
-
-        </script>
+        <script src="/javascripts/container/ApiUtils.js"/>
+        <script type="text/babel" src="/javascripts/container/connector.js"/>
+        <script type="text/babel" src="/javascripts/presentation/ui.js"/>
 
     </body>
 </html>
