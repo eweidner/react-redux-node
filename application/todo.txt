@@ -1,8 +1,8 @@
-* Add indexes to complaints collection:  product, state, date
 * Census Import doesn't change status to done after finishing import.
 * Add warning about imports in progress to UI header.
 * Make import api calls into POSTs or PUTs.
 * For months missing population data, spread interpolate pop growth of missing months instead of showing it when pop is found again.
 * Combine connection, collection methods for company, census, complaints.
 * Provide company id in complaints (build company db with id, name).
-
+* Move babel-cli and babel-preset-react to dev part of packages.json.
+npm install --save-dev babel-cli babel-preset-react
