@@ -1,3 +1,5 @@
+
+
 var complaints = require('./complaint-db');
 var dbUtils = require('./db-utils');
 
@@ -39,7 +41,7 @@ exports.states = function(params, callback) {
     count:{$sum:1}
 
     complaintsMonk.aggregate(aggregation).then((res) => {
-        var prettyResults = []
+        var prettyResults = [];
         res.forEach( (result) => {
             prettyResults.push({state: result._id, count: result.count});
         });
@@ -74,7 +76,7 @@ exports.products = function(params, callback) {
     aggregation.push({$sort: {"count": -1}});
     count:{$sum:1}
     complaintsMonk.aggregate(aggregation).then((res) => {
-        var prettyResults = []
+        var prettyResults = [];
         res.forEach((result) => {
             prettyResults.push({product: result._id, count: result.count});
         });
