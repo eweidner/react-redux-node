@@ -9,7 +9,9 @@ function ApiCheckStatus(response) {
     }
 }
 
-
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 //---------------------------------------------------
@@ -29,23 +31,26 @@ function getStates(callback) {
 }
 
 
-
-class Square extends React.Component {
-    render() {
-        return (
-            <button className="square">
-                I am a square
-            </button>
-        );
-    }
+function getTopStates(params, callback) {
+    //http://localhost:3000/api/census/topstates?year=2016&month=5&field=births&limit=3
+    var result = fetch(`/api/census/topstates?year=${params.year}&month=${params.month}&field=${params.field}&limit=${params.limit}`);
+    result.then(function(response) {
+        console.log('response', response)
+        return response.text()
+    }).then(function(text) {
+        var responseJson = JSON.parse(text);
+        var states = responseJson.states;
+        callback(states);
+    }).catch(function(ex) {
+        console.log('failed', ex)
+    })
 }
+
 
 class Header extends React.Component {
     render() {
         return (
-            <div className="header">
-                Header
-            </div>
+            <div className="header">Fun Facts About States</div>
         );
     }
 }
@@ -55,25 +60,18 @@ class StateSelector extends React.Component {
     constructor() {
         super();
         //this.state = {states: "Colorado,Nevada"};
-        self = this;
+        var self = this;
         this.state = {states: []};
         this.updateStates = function(states) {
-            console.info("Got states: " + states);
+            console.info("Got all states: " + states);
             self.setState({states: states});
         }
         getStates(this.updateStates);
     }
 
     componentWillUpdate(nextProps, nextState) {
+        console.info("StateSelector.componentWillUpdate");
         return(true);
-    }
-
-    renderConditional() {
-        if (true) {
-            return <div>Conditional True</div>
-        } else {
-            return <div>Conditional False</div>
-        }
     }
 
     renderStateHash(states) {
@@ -89,120 +87,106 @@ class StateSelector extends React.Component {
     render() {
         return (
             <div>
-                <span>{ this.state.states.length } </span>
-                <span>{ this.renderConditional() } </span>
                 <span>{ this.renderStateHash(this.state.states) } </span>
-                <ul>
-                    {
-                         this.state.states.map(function(state, index) {
-                             <li key="{index}">{ state.name }</li>
-                         })
-                    }
-                </ul>
             </div>
         );
     }
 }
 
-// {
-//
-//     this.state.states.map(function(state, index) {
-//         <div {key: index}>{ state.name }</div>
-//     })
-// }
 
-var Excel = React.createClass({
-    displayName: 'Excel',
+class StateFieldHeader extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-    propTypes: {
-        headers: React.PropTypes.arrayOf(
-            React.PropTypes.string
-        ),
-        initialData: React.PropTypes.arrayOf(
-            React.PropTypes.arrayOf(
-                React.PropTypes.string
-            )
-        ),
-    },
+    render() {
+        return(
+            <th>
+                { this.properties.name}
+            </th>
+        )
+    }
 
-    getInitialState: function() {
-        return {
-            data: this.props.initialData,
-            sortby: null,
-            descending: false,
-        };
-    },
+}
 
-    _sort: function(e) {
-        var column = e.target.cellIndex;
-        var data = this.state.data.slice();
-        var descending = this.state.sortby === column && !this.state.descending;
-        data.sort(function(a, b) {
-            return descending
-                ? (a[column] < b[column] ? 1 : -1)
-                : (a[column] > b[column] ? 1 : -1);
+
+class TopStates extends React.Component {
+    constructor() {
+        super();
+        var topStates = this;
+        this.state = {states: []};
+        this.updateStates = function(states) {
+            console.info("Got top states: " + states);
+            //self.state.states = states;
+            topStates.setState({states: states});
+        }
+        var stateSelectParams = { limit: 10, year: 2016, month: 5, field: 'births' };
+        getTopStates(stateSelectParams, this.updateStates);
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        console.info("TopStates.componentWillUpdate");
+        return(true);
+    }
+
+    renderStateRows(states) {
+        var stateRows = [];
+        var states = this.state.states.slice();
+        this.state.states.forEach((state, index) => {
+            // Used non-JSX to make it easier to assign a key.
+            var cells = [];
+            cells.push(React.DOM.td({ key: "1"}, index.toString()));
+            cells.push(React.DOM.td({ key: state.state_name}, state.state_name));
+            cells.push(React.DOM.td({ key: state.pop}, numberWithCommas(state.pop)));
+            cells.push(React.DOM.td({ key: state.popgrowth}, numberWithCommas(state.popgrowth)));
+            cells.push(React.DOM.td({ key: state.births}, numberWithCommas(state.births)));
+            cells.push(React.DOM.td({ key: state.deaths}, numberWithCommas(state.deaths)));
+            var row = React.DOM.tr({key: index}, cells);
+            stateRows.push(row);
         });
-        this.setState({
-            data: data,
-            sortby: column,
-            descending: descending,
-        });
-    },
+        return(stateRows);
+    }
 
-    render: function() {
-        var state = this.state;
+    render() {
         return (
-            <table>
-                <thead onClick={this._sort}>
-                <tr>{
-                    this.props.headers.map(function(title, idx) {
-                        if (state.sortby === idx) {
-                            title += state.descending ? ' \u2191' : ' \u2193'
-                        }
-                        return <th key={idx}>{title}</th>;
-                    })
-                }</tr>
+            <table className="statesTable">
+                <thead>
+                    <tr>
+                        <th className="noClickHeader"></th>
+                        <th className="noClickHeader"></th>
+                        <StateFieldHeader name="Population" selected="true"/>
+                        <th>Growth</th>
+                        <th>Births</th>
+                        <th>Deaths</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    this.state.data.map(function(row, idx) {
-                        return (
-                            <tr key={idx}>{
-                                row.map(function(cell, idx) {
-                                    return <td key={idx}>{cell}</td>;
-                                })
-                            }</tr>
-                        );
-                    })
-                }
+                    { this.renderStateRows(this.state.states) }
                 </tbody>
             </table>
+
+            // <div>
+            //     <div>TOP STATES</div>
+            //     <div>{ this.renderStateHash(this.state.states) } </div>
+            // </div>
         );
     }
-});
+}
 
-// var headers = [
-//     "Book", "Author", "Language", "Published", "Sales"
-// ];
-//
-// var data = [
-//     ["The Lord of the Rings", "J. R. R. Tolkien", "English", "1954-1955", "150 million"],
-//     ["Le Petit Prince (The Little Prince)", "Antoine de Saint-Exupéry", "French", "1943", "140 million"],
-//     ["Harry Potter and the Philosopher's Stone", "J. K. Rowling", "English", "1997", "107 million"],
-//     ["And Then There Were None", "Agatha Christie", "English", "1939", "100 million"],
-//     ["Dream of the Red Chamber", "Cao Xueqin", "Chinese", "1754-1791", "100 million"],
-//     ["The Hobbit", "J. R. R. Tolkien", "English", "1937", "100 million"],
-//     ["She: A History of Adventure", "H. Rider Haggard", "English", "1887", "100 million"],
-// ];
-//
-// ReactDOM.render(
-//     React.createElement(Excel, {
-//         headers: headers,
-//         initialData: data,
-//     }),
-//     document.getElementById("app")
-// );
-//
+
+class Content extends React.Component {
+    renderTopStates() {
+        return <TopStates />
+    }
+
+    render() {
+        return (
+            <div className="content">
+                { this.renderTopStates() }
+            </div>
+        );
+    }
+}
 
 
 class Page extends React.Component {
@@ -210,6 +194,9 @@ class Page extends React.Component {
         return <Header />
     }
     renderContent() {
+        return <Content />
+    }
+    renderStateSelect() {
         var stateSelector = <StateSelector />
         return(stateSelector);
     }
@@ -218,6 +205,7 @@ class Page extends React.Component {
             <div>
                 { this.renderHeader() }
                 { this.renderContent() }
+                { this.renderStateSelect() }
             </div>
         )
     }
