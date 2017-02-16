@@ -1,4 +1,0 @@
-
-function getStates() {
-    return "Colorado";
-}

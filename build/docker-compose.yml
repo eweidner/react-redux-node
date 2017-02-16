@@ -6,11 +6,18 @@ services:
     ports:
       - "27017"
 
-  mike-test:
+  states-api:
     image: 'mijomoore/omb:2.0'
     command: "node bin/www"
     ports:
       - "3000:3000"
     links:
       - "mongo:mongo"
+
+  states-ui:
+    image: 'mijomoore/omb-portal:2.0'
+    ports:
+      - "3080:3080"
+    links:
+      - "states-api:states-api"
 

@@ -94,3 +94,43 @@ exports.products = function(params, callback) {
 
 }
 
+
+
+exports.companies = function(params, callback) {
+    var minDate = dbUtils.encodeYearMonth(params.year, params.month);
+    var maxDate = dbUtils.encodeYearMonthPlusMonths(params.year, params.month, params.months);
+
+    var aggregation = [];
+
+    // Fields that will be processes in aggregation pipeline.
+    var project = {date: true, state: true, company: true};
+    aggregation.push({ $project: project });
+
+    var matcher = {
+        date: {$gte: minDate, $lte: maxDate}
+    }
+    if (params.state) matcher['state'] = params.state;
+    aggregation.push({$match: matcher});
+    aggregation.push({
+        $group: {
+            _id: '$company',
+            count: {$sum: 1}
+        }
+    });
+    aggregation.push({$limit: params.limit});
+    aggregation.push({$sort: {"count": -1}});
+    count:{$sum:1}
+
+    complaintsMonk.aggregate(aggregation).then((res) => {
+        var prettyResults = [];
+        res.forEach((result) => {
+            prettyResults.push({company: result._id, count: result.count});
+        });
+        callback(prettyResults);
+    }).catch(function(err) {
+        console.error("Exception with aggregate: " + err.message);
+        throw err;
+    });
+
+}
+

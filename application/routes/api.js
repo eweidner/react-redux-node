@@ -31,8 +31,6 @@ router.get('/states', function(req, res, next) {
 });
 
 
-
-
 /*
  *  Find states with complaints that match either a particular company or particular product over period of time.
  *  Example: /api/complaints/states?year=2015&month=6&months=12&company=Bank+of+America
@@ -67,6 +65,21 @@ router.get('/complaints/products', function(req, res, next) {
     if (req.query.limit) reqData.limit = parseInt(req.query.limit);
     complaintsQueries.products(reqData, (documents) => {
         res.json({products: documents, query: reqData});
+    });
+});
+
+
+router.get('/complaints/companies', function(req, res, next) {
+    var reqData = {
+        year :      parseInt(req.query.year),
+        month :     parseInt(req.query.month),
+        months :    parseInt(req.query.months),
+        state :     req.query.state,
+        limit: 10
+    }
+    if (req.query.limit) reqData.limit = parseInt(req.query.limit);
+    complaintsQueries.companies(reqData, (documents) => {
+        res.json({companies: documents, query: reqData});
     });
 });
 
