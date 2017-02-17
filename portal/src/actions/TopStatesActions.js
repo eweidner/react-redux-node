@@ -1,33 +1,39 @@
 import { REQUEST_TOP_STATES, FETCH_TOP_STATES, RECEIVE_TOP_STATES, INVALIDATE_TOP_STATES } from '../constants/ActionTypes';
+import { API_HOST } from '../constants/Api';
 
 
-export function invalidateSubreddit(params) {
+export function invalidateTopStates(stateQueryParams) {
   return {
     type: INVALIDATE_TOP_STATES,
-    subreddit
+    stateQueryParams
   }
 }
 
-export function requestTopStates() {
-  return {
-    type: REQUEST_TOP_STATES
-  };
+export function requestTopStates(stateQueryParams) {
+    console.info("Action: requestTopStates.  Params: " + stateQueryParams)
+    return {
+        type: REQUEST_TOP_STATES,
+        stateQueryParams
+    };
 }
 
-function receiveTopStates(params, json) {
+function receiveTopStates(stateQueryParams, json) {
+    console.info("Action: receiveTopStates. json: " + Object.keys(json))
     return {
         type: RECEIVE_TOP_STATES,
-        sortField,
-        states: json.states.children.map(child => child.data),
+        stateQueryParams,
+        topStates: json.states.map(child => child.data),
         receivedAt: Date.now()
     }
 }
 
-//var result = fetch(`/api/census/topstates?year=${params.year}&month=${params.month}&field=${params.field}&limit=${params.limit}`);
-function fetchTopStates(params) {
+
+export function fetchTopStates(params) {
+    // Chrome dev tools, in networks, shows this is returning good response, but something going wrong.
+    var url = `${API_HOST}/api/census/topstates?year=${params.year}&month=${params.month}&field=${params.field}&limit=${params.limit}`;
     return dispatch => {
         dispatch(requestTopStates(params))
-        return fetch(`http://localhost:3000/api/census/topstates?year=${params.year}&month=${params.month}&field=${params.field}&limit=${limit`)
+        return fetch(url)
             .then(response => response.json())
             .then(json => dispatch(receiveTopStates(params, json)))
     }

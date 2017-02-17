@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import counter from './counter';
-import census from './topStates';
+import topStatesReducer from './topStates';
 
 /**
  * combineReducers is important to understand. As your app might grow in size
@@ -16,8 +16,8 @@ import census from './topStates';
  * More info: http://rackt.org/redux/docs/api/combineReducers.html
  */
 const rootReducer = combineReducers({
-  counter, // you might be used to: counter: counter,
-  census,
+    counter, // you might be used to: counter: counter,
+    topStatesReducer
 });
 
 export default rootReducer;

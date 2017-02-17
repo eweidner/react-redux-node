@@ -3,13 +3,25 @@
 var util = require('util');
 var express = require('express');
 var router = express.Router();
+var cors = require('cors');
 
 // Common for all API routes
+
 router.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Request-Method', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+    res.setHeader('Access-Control-Allow-Headers', '*');
     next(); // go to the next routes and don't stop here
 });
 
-router.get('/', function(req, res, next) {
+
+
+router.get('/', cors(), function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Request-Method', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+    res.setHeader('Access-Control-Allow-Headers', '*');
     res.json({ message: 'You have connected to our API.  Consult documentation for endpoints' });
 });
 

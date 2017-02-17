@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-// Actions
 import * as CounterActions from '../actions/CounterActions';
-import * as TopStatesActions from '../actions/TopStatesActions';
-
 import Counter from '../components/Counter';
 import Footer from '../components/Footer';
+
+// import * as TopStatesActions from '../actions/TopStatesActions';
 import TopStates from '../components/TopStates';
+
 
 /**
  * It is common practice to have a 'Root' container/component require our main App (this one).
@@ -18,13 +17,22 @@ import TopStates from '../components/TopStates';
 class App extends Component {
   render() {
     // we can use ES6's object destructuring to effectively 'unpack' our props
-    const { counter, actions } = this.props;
+    const { topStatesAction, counter, counterActions } = this.props;
+    var initialStateQueryParams = new Object();
+    initialStateQueryParams['field'] = 'pop';
+    initialStateQueryParams['year'] = 2015;
+    initialStateQueryParams['month'] = 8;
+    initialStateQueryParams['limit'] = 10;
+    var initialTopStates = [];
     return (
       <div className="main-app-container">
-        <div className="main-app-nav">Simple Redux Boilerplate</div>
+        <div className="main-app-nav">States and Stuff</div>
+
         {/* notice that we then pass those unpacked props into the Counter component */}
-        <Counter counter={counter} actions={actions} />
-        <TopStates actions="{topStateActions}"/>
+        <Counter counter={counter} actions={counterActions} />
+
+        <TopStates stateQueryParams={initialStateQueryParams} topStates={initialTopStates} actions={topStatesAction} />
+
         <Footer />
       </div>
     );
@@ -32,8 +40,9 @@ class App extends Component {
 }
 
 App.propTypes = {
-  counter: PropTypes.number.isRequired,
-  actions: PropTypes.object.isRequired
+    counter: PropTypes.number.isRequired,
+    counterActions: PropTypes.object.isRequired,
+    topStatesActions: PropTypes.object.isRequired
 };
 
 /**
@@ -43,7 +52,8 @@ App.propTypes = {
  */
 function mapStateToProps(state) {
   return {
-    counter: state.counter
+    counter: state.counter,
+      stateQueryParams: state.stateQueryParams
   };
 }
 
@@ -61,13 +71,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mapTopStatesDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(TopStatesActions, dispatch)
-    };
-
-}
-
 /**
  * 'connect' is provided to us by the bindings offered by 'react-redux'. It simply
  * connects a React component to a Redux store. It never modifies the component class
@@ -77,7 +80,6 @@ function mapTopStatesDispatchToProps(dispatch) {
  */
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mapTopStatesDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(App);

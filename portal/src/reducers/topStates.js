@@ -1,7 +1,8 @@
-import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../constants/ActionTypes';
+import { RECEIVE_TOP_STATES, REQUEST_TOP_STATES, INVALIDATE_TOP_STATES } from '../constants/ActionTypes';
 
-export default function counter(state = 0, action) {
 
+
+function topStates(state = 0, action) {
     const initialState = {
         isFetching: false,
         didInvalidate: false,
@@ -26,7 +27,7 @@ export default function counter(state = 0, action) {
                 return Object.assign({}, state, {
                     isFetching: false,
                     didInvalidate: false,
-                    items: action.posts,
+                    topStates: action.topStates,
                     lastUpdated: action.receivedAt
                 })
             default:
@@ -34,4 +35,17 @@ export default function counter(state = 0, action) {
         }
     }
 
+}
+
+export default function topStatesReducer(state = { }, action) {
+    switch (action.type) {
+        case INVALIDATE_TOP_STATES:
+        case RECEIVE_TOP_STATES:
+        case REQUEST_TOP_STATES:
+            return Object.assign({}, state, {
+                [action.field]: topStates(state[action.field], action)
+            })
+        default:
+            return state
+    }
 }

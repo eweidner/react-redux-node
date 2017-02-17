@@ -1,20 +1,17 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
 
 
-export default class StateFieldHeader extends Component {
+class StateFieldHeader extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    onClicked() {
-        var sortField = this.props.code;
-        _dispatcher.publish({target: "StateList", subject: "sortChanged", sortField: sortField});
-    }
-
     render() {
+        const { displayName, onClick, fieldName } = this.props
+
         return(
-            <th onClick={this.onClicked.bind(this) } >
-                { this.props.name }
+            <th onChange={e => onClick(fieldName, e.target.value)} >
+                { displayName }
             </th>
         )
     }

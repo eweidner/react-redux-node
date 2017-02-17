@@ -8,7 +8,11 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var api = require('./routes/api');
 
-var app = express();
+var express = require('express')
+    , cors = require('cors')
+    , app = express();
+app.use(cors());
+app.disable('etag');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
