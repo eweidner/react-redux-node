@@ -24,33 +24,40 @@ export default class CompanyComplaintsTable extends Component {
 
 
   render() {
-    return(
-      <table id="companyComplaintsTable">
-        <tbody>
-        <tr>
-          <td>
-            <h3>Companies with most Consumer Complaints</h3>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table className="statesTable">
-              <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Company</th>
-                <th>Count</th>
-              </tr>
-              </thead>
-              <tbody>
-              { this.renderCompanyRows(this.props.companyComplaints) }
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    );
+    if (this.props.companyComplaints.length > 0) {
+      return(
+        <table id="companyComplaintsTable">
+          <tbody>
+          <tr>
+            <td>
+              <h3>Companies with most Consumer Complaints</h3>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table className="statesTable">
+                <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Company</th>
+                  <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                { this.renderCompanyRows(this.props.companyComplaints) }
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      );
+
+    } else {
+        return(
+          <div></div>
+        );
+    }
   }
 
 }

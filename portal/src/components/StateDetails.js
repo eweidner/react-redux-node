@@ -9,15 +9,28 @@ export default class StateDetails extends Component {
     super(props);
   }
 
+  sectionTitle() {
+    if (this.props.state) {
+      return(this.props.state.name);
+    } else {
+      return ""
+    }
+  }
+
   render() {
-    const { selectedState, productComplaints, companyComplaints } = this.props
+    const { state, productComplaints, companyComplaints } = this.props
 
-    return (
-
-      <table id="stateDetailsTable">
-        <tbody>
+    if ((productComplaints.length > 0) || (companyComplaints.length > 0)) {
+      return (
+        <table id="stateDetailsTable">
+          <tbody>
           <tr>
-            <td colSpan="2" ><span>Consumber Complaint Information for {selectedState}</span></td>
+            <td colSpan="2" >
+              <div className="detailsBanner">
+                <span className="stateTitle">{this.sectionTitle()}</span><br/>
+                <span className="stateSubTitle">Consumber Complaint Information</span>
+              </div>
+            </td>
           </tr>
           <tr>
             <td>
@@ -27,8 +40,12 @@ export default class StateDetails extends Component {
               <CompanyComplaintsTable companyComplaints={companyComplaints }/>
             </td>
           </tr>
-        </tbody>
-      </table>
-    );
+          </tbody>
+        </table>
+      );
+
+    } else {
+        return(<div></div>);
+    }
   }
 }

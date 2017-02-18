@@ -47,13 +47,13 @@ function stateDetailsReducer(state, action) {
             console.info("TopStatesReducer - receive complaint products");
             return Object.assign({}, state, {
               productComplaints: action.productComplaints,
-              selectedState: action.selectedStateCode
+              selectedStateCode: action.productQueryParams.state
             })
           case RECEIVE_COMPANY_COMPLAINTS:
             console.info("TopStatesReducer - receive complaint companies");
             return Object.assign({}, state, {
               companyComplaints: action.companyComplaints,
-              selectedState: action.selectedStateCode
+              selectedStateCode: action.companyQueryParams.state
             })
           default:
             return state
@@ -91,7 +91,7 @@ function topStatesReducer(state, action) {
     const initialState = {
         didInvalidate: false,
         topStates: [],
-        selectionParams: {
+        stateSelectionParams: {
             field: 'pop',
             year: 2016,
             month: 1,
@@ -106,12 +106,14 @@ function topStatesReducer(state, action) {
         switch (action.type) {
             case INVALIDATE_TOP_STATES:
                 return Object.assign({}, state, {
-                    didInvalidate: true
+                    didInvalidate: true,
+                    stateSelectionParams: action.stateSelectionParams
                 })
             case REQUEST_TOP_STATES:
                 return Object.assign({}, state, {
                     isFetching: true,
-                    didInvalidate: false
+                    didInvalidate: false,
+                    stateSelectionParams: action.stateSelectionParams
                 })
             case RECEIVE_TOP_STATES:
                 console.info("TopStatesReducer - receive top states");
@@ -119,7 +121,8 @@ function topStatesReducer(state, action) {
                     isFetching: false,
                     didInvalidate: false,
                     topStates: action.topStates,
-                    lastUpdated: action.receivedAt
+                    lastUpdated: action.receivedAt,
+                    stateSelectionParams: action.stateSelectionParams
                 })
             default:
                 return state
@@ -127,6 +130,34 @@ function topStatesReducer(state, action) {
     }
 }
 
+
+function uiSettingsReducer(state, action) {
+  const initialState = {
+    mode: "state-centric"
+  }
+
+  if (typeof state === 'undefined') {
+    return initialState
+  } else {
+    switch (action.type) {
+      case SWITCH_UI_TO_STATE_CENTRIC:
+        return Object.assign({}, state, {
+          mode: "state-centric"
+        })
+      case SWITCH_UI_TO_PRODUCT_CENTRIC:
+        return Object.assign({}, state, {
+          mode: "product-centric"
+        })
+      case SWITCH_UI_TO_COMPANY_CENTRIC:
+        return Object.assign({}, state, {
+          mode: "company-centric"
+        })
+      default:
+        return state
+    }
+  }
+
+}
 
 
 /**

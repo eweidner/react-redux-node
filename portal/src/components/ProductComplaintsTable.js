@@ -25,33 +25,42 @@ export default class ProductComplaintTable extends Component {
 
 
   render() {
-    return(
-      <table id="productComplaintsTable">
-        <tbody>
-        <tr>
-          <td>
-            <h3>Products with most Consumer Complaints</h3>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table className="statesTable">
-              <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Product Complaints</th>
-                <th>Count</th>
-              </tr>
-              </thead>
-              <tbody>
-              { this.renderProductRows(this.props.productComplaints) }
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    );
+    if (this.props.productComplaints.length > 0) {
+      return(
+        <table id="productComplaintsTable">
+          <tbody>
+          <tr>
+            <td>
+              <h3>Products with most Consumer Complaints</h3>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table className="statesTable">
+                <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Product Complaints</th>
+                  <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                { this.renderProductRows(this.props.productComplaints) }
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      );
+
+    } else {
+      return(
+        <div></div>
+      );
+
+    }
+
   }
 
 }

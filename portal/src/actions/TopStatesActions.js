@@ -10,7 +10,7 @@ import { API_HOST } from '../constants/Api';
 export function invalidateTopStates(stateQueryParams) {
   return {
     type: INVALIDATE_TOP_STATES,
-    stateQueryParams
+    stateSelectionParams
   }
 }
 
@@ -22,20 +22,20 @@ export function selectSortFieldAction(sortField) {
   }
 }
 
-export function requestTopStates(stateQueryParams) {
-    console.info("TopStatesActions.requestTopStates. params: " + Object.keys(stateQueryParams))
+export function requestTopStates(stateSelectionParams) {
+    console.info("TopStatesActions.requestTopStates. params: " + Object.keys(stateSelectionParams))
     return {
         type: REQUEST_TOP_STATES,
-        stateQueryParams
+      stateSelectionParams
     };
 }
 
-function receiveTopStates(stateQueryParams, json) {
+function receiveTopStates(stateSelectionParams, json) {
     var topStates = json.states;
     console.info("TopStatesActions.receiveTopStates. json: " + Object.keys(json))
     return {
         type: RECEIVE_TOP_STATES,
-        stateQueryParams,
+        stateSelectionParams,
         topStates: topStates,
         receivedAt: Date.now()
     }
@@ -52,6 +52,7 @@ export function fetchTopStates(params) {
             .then(json => dispatch(receiveTopStates(params, json)))
     }
 }
+
 
 export function requestProductComplaints(selectedStateCode) {
   console.info("TopStatesActions.requestComplaintProducts. params: " + selectedStateCode)

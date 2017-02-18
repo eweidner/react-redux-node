@@ -33,9 +33,6 @@ footer {
     text-decoration: none;
     color: inherit;
 
-    &:hover {
-      color: $accent-blue;
-    }
   }
 }
 
@@ -121,6 +118,12 @@ footer {
   cursor: pointer;
 }
 
+.selectedClickableHeader {
+  background-color: #666666;
+  color: #ffffff;
+  cursor: pointer;
+}
+
 .noClickHeader {
   background-color: $main-bg-color;
 }
@@ -131,4 +134,22 @@ footer {
 
 #stateDetailsTable {
   width: 100%;
+}
+
+.dateSelect {
+  width: 80px;
+  font-size: 16px;
+}
+
+.detailsBanner {
+  margin-top: 20px;
+}
+
+
+.stateTitle {
+  font-size: 24px;
+  font-weight: bold;
+}
+.stateSubTitle {
+  font-size: 16px;
 }
