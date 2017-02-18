@@ -5,7 +5,7 @@ $accent-blue: #37bbe4;
 $accent-gray: #e1e0dd;
 $accent-black: #35342f;
 $accent-orange: #ec6b2d;
-$accent-red: #dd6464;
+$darkest-bg-color: #222222;
 
 body {
   background-color: $main-bg-color;
@@ -24,42 +24,6 @@ body {
   text-align: center;
 }
 
-.counter-num-label {
-  color: $accent-orange;
-  padding-top: 1em;
-  font-size: 3em;
-  text-align: center;
-  width: 100%;
-}
-
-.counter-even-label {
-  padding-top: 1em;
-  font-size: 0.75em;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-}
-
-.counter-buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 3em;
-
-  button {
-    background-color: #CCC;
-    border: none;
-    height: 30px;
-    width: 80px;
-    margin-left: 1em;
-    margin-right: 1em;
-
-    &:hover {
-      background-color: $accent-gray;
-    }
-  }
-}
-
 footer {
   font-size: 0.75em;
   text-align: center;
@@ -73,8 +37,98 @@ footer {
       color: $accent-blue;
     }
   }
+}
 
-  #heart{
-    color: $accent-red;
-  }
+
+a {
+  color: #00B7FF;
+}
+
+h2 {
+  font-size: 1.5em;
+  -webkit-margin-after: 0.3em;
+}
+
+footer {
+  width: 100%;
+  background-color: 0x907777;
+  height: 30px;
+}
+
+.header {
+  width: 100%;
+  height: 60px;
+  padding: 15px;
+  background-color: black;
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.content {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.stateDetails {
+  border: 1px solid #888888;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 10px;
+}
+
+.statesTable
+{
+  font-family: Tahoma, 'sans serif';
+  font-size: 16px;
+  border-collapse:collapse;
+}
+
+.statesTable td, th
+{
+  border: 1px solid #999999;
+  padding: 3px 3px 3px 3px;
+  text-align: right;
+  font-size: 14px
+}
+
+.statesTable td
+{
+  width: 100px;
+  cursor: pointer;
+}
+
+//.statesTable th {
+//  font-size: 14px;
+//  text-align: right;
+//  padding-left:2px;
+//  padding-top:2px;
+//  padding-bottom:2px;
+//  background-color: #202020;
+//  color:#ffffff;
+//  cursor: hand;
+//}
+
+.statesTable tr:hover {
+  background-color: #bbbbbb;
+}
+
+.clickableHeader {
+  background-color: $darkest-bg-color;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.noClickHeader {
+  background-color: $main-bg-color;
+}
+
+#productComplaintsTable {
+  width: 500px;
+}
+
+#stateDetailsTable {
+  width: 100%;
 }

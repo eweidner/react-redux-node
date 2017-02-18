@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { fetchTopStates, invalidateTopStates } from '../actions/TopStatesActions'
+import {  fetchTopStates, invalidateTopStates, selectSortFieldAction, fetchStateProfiles,
+          showStateCompanyComplaints, showStateProductComplaints, findStateProfiles} from '../actions/TopStatesActions'
 import Picker from './Picker'
-import StateFieldHeader from './StateFieldHeader'
-
+import TopStatesTable from './TopStatesTable'
+import StateDetails from './StateDetails'
+import StateSelectionParams from './StateSelectionParams'
 
 /*
  * Fake the date for now - hook up date selection later.
@@ -17,102 +19,59 @@ function _makeSelectParamsFromSortField(sortField) {
 class TopStates extends Component {
   constructor(props) {
     super(props)
-    //props.stateQueryParams = {field: props.field, year: props.year, month: props.month, limit: 10};
-    this.handleRefreshClick = this.handleRefreshClick.bind(this)
+    this.onStateRowClicked = this.onStateRowClicked.bind(this);
   }
+
+  onStateRowClicked(event) {
+    var stateCode = event.target.parentNode.id;
+    this.props.dispatch(showStateCompanyComplaints(stateCode))
+    this.props.dispatch(showStateProductComplaints(stateCode))
+  }
+
 
   componentDidMount() {
       console.info("componentDidMount");
-    const { dispatch, stateQueryParams } = this.props
-    dispatch(fetchTopStates(stateQueryParams))
+      const { dispatch, sortField } = this.props
+      if (sortField) {
+        dispatch(fetchTopStates(_makeSelectParamsFromSortField(sortField)))
+      } else {
+        dispatch(selectSortFieldAction('pop'))
+      }
+      dispatch(fetchStateProfiles())
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.field !== this.props.field) {
-      const { dispatch, stateQueryParams } = nextProps
-      dispatch(fetchTopStates(stateQueryParams))
-    }
-  }
-
-  handleRefreshClick(e) {
-    e.preventDefault()
-
-    const { dispatch, field } = this.props
-    dispatch(invalidateTopStates(stateQueryParams))
-    dispatch(fetchTopStates(stateQueryParams))
-  }
-
-   handleFieldChange(nextSelectField) {
-       this.props.dispatch(fetchTopStates({field: field, state: this.state.state, year: this.state.year, month: this.state.month, limit: 10}))
-   }
-
-   columnHeaderClicked(fieldName, event) {
-      console.info("Header clicked: " + fieldName);
-   }
-
-    renderTopStates(topStates) {
-        if ((topStates) && (topStates.length > 0)) {
-            return (
-            <table className="statesTable">
-                <thead>
-                <tr>
-                    <th className="noClickHeader"></th>
-                    <th className="noClickHeader"></th>
-                    <StateFieldHeader onClick={this.columnHeaderClicked} displayName="Population" fieldName="pop" selected="true"/>
-                    <StateFieldHeader onClick={this.columnHeaderClicked} displayName="Net Growth" fieldName="popgrowth" selected="false"/>
-                    <StateFieldHeader onClick={this.columnHeaderClicked} displayName="Births" fieldName="births" selected="false"/>
-                    <StateFieldHeader onClick={this.columnHeaderClicked} displayName="Deaths" fieldName="deaths" selected="false"/>
-                </tr>
-                </thead>
-                <tbody>
-                   { this.renderStateRows(topStates) }
-                </tbody>
-            </table>
-            )
-        } else {
-            return ""
+    componentWillReceiveProps(nextProps) {
+        console.info("componentWillReceiveProps - props were passed to this component");
+        if (nextProps.sortField !== this.props.sortField) {
+            console.info("  - sort field changed.");
+            const { dispatch, sortField } = nextProps
+            dispatch(selectSortFieldAction('pop'))
         }
     }
+
+    columnHeaderClicked(fieldName, event) {
+        console.info("Header clicked: " + fieldName);
+    }
+
 
   render() {
-    const { field, year, month, limit, topStates, isFetching, lastUpdated } = this.props
-    return (
-      <div>
-        { this.renderTopStates(topStates) }
-        <Picker key={'fieldPicker'}
-                value={field}
-                onChange={this.handleFieldChange}
-                options={[ 'pop', 'births', 'deaths', 'popgrowth' ]} />
-        <Picker key={'yearPicker'}
-                value={year}
-                onChange={this.handleYearChange}
-                options={[ '2013', '2014', '2015', '2016' ]} />
-          <Picker key={'monthPicker'}
-                  value={month}
-                  onChange={this.handleMonthChange}
-                  options={[ '1', '2', '3', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12' ]} />
-          <p>
-          {lastUpdated &&
-          <span>
-              Last updated at {new Date(lastUpdated).toLocaleTimeString()}.
-            {' '}
-            </span>
-          }
-          {!isFetching &&
-          <a href='#'
-             onClick={this.handleRefreshClick}>
-            Refresh
-          </a>
-        }
-        </p>
-        }
-      </div>
-    )
-  }
+      console.info("TopStates.render");
+      const { sortField, year, month, topStates, isFetching, lastUpdated, stateProfiles, stateSeletionParams } = this.props
+//      <StateSelectionParams selectionParams={stateSeletionParams}/>
+      return (
+        <div>
+            <TopStatesTable topStates={topStates} stateProfiles={stateProfiles} onStateRowClicked={this.onStateRowClicked} onHeaderClicked={this.columnHeaderClicked} />
+            <StateDetails  stateName={this.props.selectedStateName} companyComplaints={this.props.companyComplaints} productComplaints={this.props.productComplaints} />
+        </div>
+      )
+    }
 }
 
 TopStates.propTypes = {
-    stateQueryParams: PropTypes.object,
+    sortField: PropTypes.string,
+    year: PropTypes.number,
+    month: PropTypes.number,
+    limit: PropTypes.number,
     topStates: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.number,
@@ -120,25 +79,18 @@ TopStates.propTypes = {
 }
 
 function mapStateToProps(state) {
-    const { field, year, month, limit, topStates, isFetching, lastUpdated, topStatesReducer } = state;
-  //   const {
-  //       isFetching,
-  //       lastUpdated,
-  //       topStates
-  // } = topStatesReducer[stateQueryParams] || {
-  //   isFetching: true,
-  //   items: []
-  // }
+    console.info(mapStateToProps);
+    const { selectedTopStatesSortField, topStatesReducer } = state;
+    var newProps = {
+        stateSeletionParams: state.topStatesReducer.selectionParams,
+        companyComplaints: state.stateDetailsReducer.companyComplaints,
+        productComplaints: state.stateDetailsReducer.productComplaints,
+        sortField: state.selectedTopStatesSortField,
+        topStates: state.topStatesReducer.topStates,
+        stateProfiles: state.stateProfilesReducer.stateProfiles
+    }
 
-  return {
-    topStates,
-    field,
-    year,
-    month,
-    limit,
-    isFetching,
-    lastUpdated
-  }
+    return newProps;
 }
 
 export default connect(mapStateToProps)(TopStates)

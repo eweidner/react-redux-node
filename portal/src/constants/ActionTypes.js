@@ -1,11 +1,14 @@
-/**
- * Constants are important - they describe what type of action is performed
- * within your app. Combined with the DevTools/logger, you can see how state and subsequently
- * your UI is being affected.
- */
-export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
-export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
 export const REQUEST_TOP_STATES = 'REQUEST_TOP_STATES';
 export const FETCH_TOP_STATES = 'FETCH_TOP_STATES';
 export const RECEIVE_TOP_STATES = 'RECEIVE_TOP_STATES';
 export const INVALIDATE_TOP_STATES = 'INVALIDATE_TOP_STATES';
+export const SELECT_SORTFIELD = 'SELECT_SORTFIELD';
+
+export const REQUEST_COMPANY_COMPLAINTS = 'REQUEST_COMPANY_COMPLAINTS';
+export const RECEIVE_COMPANY_COMPLAINTS = 'RECEIVE_COMPANY_COMPLAINTS';
+
+export const REQUEST_PRODUCT_COMPLAINTS = 'REQUEST_PRODUCT_COMPLAINTS';
+export const RECEIVE_PRODUCT_COMPLAINTS = 'RECEIVE_PRODUCT_COMPLAINTS';
+
+export const RECEIVE_STATE_PROFILES = 'RECEIVE_STATES_PROFILES';
+export const REQUEST_STATE_PROFILES = 'REQUEST_STATES_PROFILES';

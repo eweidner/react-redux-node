@@ -27,7 +27,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
       filename: 'index.html',
-      title: 'Simple Redux Boilerplate',
+      title: 'Fun Facts about States',
       inject: 'body'
     }),
     /**

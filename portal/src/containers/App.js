@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as CounterActions from '../actions/CounterActions';
-import Counter from '../components/Counter';
 import Footer from '../components/Footer';
 
-// import * as TopStatesActions from '../actions/TopStatesActions';
+import * as topStatesActions from '../actions/TopStatesActions';
 import TopStates from '../components/TopStates';
 
 
@@ -17,21 +15,18 @@ import TopStates from '../components/TopStates';
 class App extends Component {
   render() {
     // we can use ES6's object destructuring to effectively 'unpack' our props
-    const { topStatesAction, counter, counterActions } = this.props;
-    var initialStateQueryParams = new Object();
-    initialStateQueryParams['field'] = 'pop';
-    initialStateQueryParams['year'] = 2015;
-    initialStateQueryParams['month'] = 8;
-    initialStateQueryParams['limit'] = 10;
+    // const { topStatesAction, counter, counterActions } = this.props;
+    // var initialStateQueryParams = new Object();
+    // initialStateQueryParams['field'] = 'pop';
+    // initialStateQueryParams['year'] = 2015;
+    // initialStateQueryParams['month'] = 8;
+    // initialStateQueryParams['limit'] = 10;
     var initialTopStates = [];
     return (
       <div className="main-app-container">
         <div className="main-app-nav">States and Stuff</div>
 
-        {/* notice that we then pass those unpacked props into the Counter component */}
-        <Counter counter={counter} actions={counterActions} />
-
-        <TopStates stateQueryParams={initialStateQueryParams} topStates={initialTopStates} actions={topStatesAction} />
+        <TopStates sortField='pop' year={2015} month={7} limit={10} topStates={initialTopStates} actions={topStatesActions} />
 
         <Footer />
       </div>
@@ -40,9 +35,9 @@ class App extends Component {
 }
 
 App.propTypes = {
-    counter: PropTypes.number.isRequired,
-    counterActions: PropTypes.object.isRequired,
-    topStatesActions: PropTypes.object.isRequired
+    // counter: PropTypes.number.isRequired,
+    // counterActions: PropTypes.object.isRequired,
+    // topStatesActions: PropTypes.object.isRequired
 };
 
 /**
@@ -52,8 +47,8 @@ App.propTypes = {
  */
 function mapStateToProps(state) {
   return {
-    counter: state.counter,
-      stateQueryParams: state.stateQueryParams
+    // counter: state.counter,
+    // stateQueryParams: state.stateQueryParams
   };
 }
 
@@ -67,7 +62,7 @@ function mapStateToProps(state) {
  */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(CounterActions, dispatch)
+    //actions: bindActionCreators(CounterActions, dispatch)
   };
 }
 
