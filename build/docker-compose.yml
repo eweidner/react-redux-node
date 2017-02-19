@@ -10,7 +10,7 @@ services:
     image: 'mijomoore/omb:2.0'
     command: "node bin/www"
     ports:
-      - "3000:3000"
+      - "3001:3000"
     links:
       - "mongo:mongo"
 

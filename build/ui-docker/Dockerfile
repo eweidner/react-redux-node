@@ -3,7 +3,7 @@ FROM node:6.9.5
 ENV WEB_PORT 3080
 ENV NODE_ENV production
 ENV APP_BASE /var
-ENV APP_HOME /var/application
+ENV APP_HOME /var/portal
 
 RUN mkdir -p $APP_BASE && chmod ogu+rwx $APP_BASE
 WORKDIR $APP_BASE
@@ -21,4 +21,4 @@ WORKDIR $APP_HOME
 
 EXPOSE $WEB_PORT
 
-ENTRYPOINT ["/var/application/entrypoint.sh"]
+ENTRYPOINT ["/var/portal/entrypoint.sh"]
