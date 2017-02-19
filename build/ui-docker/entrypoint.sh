@@ -5,5 +5,5 @@
 tail -100f /etc/hosts
 
 npm run setup
-
-npm start --port $WEB_PORT
+npm install
+npm run dev

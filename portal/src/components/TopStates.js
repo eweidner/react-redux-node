@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {  fetchTopStates, invalidateTopStates, selectSortFieldAction, fetchStateProfiles,
-          showStateCompanyComplaints, showStateProductComplaints,
-          fetchCompanyDetails, fetchProductDetails, findStateProfiles, closeComplaintDetails} from '../actions/TopStatesActions'
+import {    fetchTopStates, invalidateTopStates, selectSortFieldAction, fetchStateProfiles,
+    showStateCompanyComplaints, showStateProductComplaints,
+    fetchCompanyDetails, fetchProductDetails, findStateProfiles, closeComplaintDetails,
+    invalidateComplaintData} from '../actions/TopStatesActions'
 import Picker from './Picker'
 import TopStatesTable from './TopStatesTable'
 import StateDetails from './StateDetails'
@@ -117,34 +118,33 @@ class TopStates extends Component {
         }
     }
 
-
     onYearChange(nextYear) {
         var selectionParams = this.props.stateSelectionParams
         if (nextYear != selectionParams.year) {
-          var newParams = {
-            year: nextYear,
-            month: selectionParams.month,
-            field: selectionParams.field,
-            limit: selectionParams.limit
-          }
-          this.props.dispatch(fetchTopStates(newParams))
-
+            var newParams = {
+                year: nextYear,
+                month: selectionParams.month,
+                field: selectionParams.field,
+                limit: selectionParams.limit
+            }
+            this.props.dispatch(fetchTopStates(newParams))
+            this.props.dispatch(invalidateComplaintData())
         }
     }
 
     onMonthChange(nextMonth) {
         var selectionParams = this.props.stateSelectionParams
         if (nextMonth != selectionParams.month) {
-          var newParams = {
-            year: selectionParams.year,
-            month: nextMonth,
-            field: selectionParams.field,
-            limit: selectionParams.limit
-          }
-          this.props.dispatch(fetchTopStates(newParams))
+            var newParams = {
+                year: selectionParams.year,
+                month: nextMonth,
+                field: selectionParams.field,
+                limit: selectionParams.limit
+            }
+            this.props.dispatch(fetchTopStates(newParams))
+            this.props.dispatch(invalidateComplaintData())
         }
     }
-
     onStateSortFieldChange(event) {
         var nextField = event.target.id;
         var selectionParams = this.props.stateSelectionParams

@@ -1,6 +1,6 @@
 FROM node:6.9.5
 
-ENV WEB_PORT 3080
+ENV WEB_PORT 3000
 ENV NODE_ENV production
 ENV APP_BASE /var
 ENV APP_HOME /var/portal
