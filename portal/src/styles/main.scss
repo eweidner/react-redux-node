@@ -15,8 +15,19 @@ body {
   font-family: 'Raleway', sans-serif;
 }
 
+.mainHeader {
+  background-color: #35342f;
+  color: white;
+  width: 100%;
+  position: fixed;
+  opacity: 0.8;
+}
 .main-app-container {
-  padding-top: 2em;
+  padding-top: 5em;
+}
+
+.complaintDetailsHolder {
+  width: 800px;
 }
 
 .main-app-nav {
@@ -32,7 +43,6 @@ footer {
   a {
     text-decoration: none;
     color: inherit;
-
   }
 }
 
@@ -97,17 +107,6 @@ footer {
   cursor: pointer;
 }
 
-//.statesTable th {
-//  font-size: 14px;
-//  text-align: right;
-//  padding-left:2px;
-//  padding-top:2px;
-//  padding-bottom:2px;
-//  background-color: #202020;
-//  color:#ffffff;
-//  cursor: hand;
-//}
-
 .statesTable tr:hover {
   background-color: #bbbbbb;
 }
@@ -145,11 +144,45 @@ footer {
   margin-top: 20px;
 }
 
-
 .stateTitle {
   font-size: 24px;
+  color: cadetblue;
   font-weight: bold;
 }
+
 .stateSubTitle {
   font-size: 16px;
+}
+
+.detailsBanner {
+  padding-top: 4px;
+  margin-bottom: 10px;
+  border-top: 4px solid #bbbbbb;
+  width: 100%;
+}
+
+.tableTopHeader {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.underTableInstructions {
+  font-size: 14px;
+  font-weight: bold;
+  color: #662222;
+}
+
+.popPieChartHolder {
+  margin-left: 40px;
+}
+
+.sectionCloseButton {
+  float: right;
+  border: 1px solid black;
+  padding: 3px;
+  background-color: #ddddcc;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-left: 20px;
+  cursor: pointer;
 }

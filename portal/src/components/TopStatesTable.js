@@ -64,10 +64,6 @@ export default class TopStatesTable extends Component {
     var head = React.DOM.th({key: params.code, className: className, onClick: this.onHeaderClicked, id: params.code}, params.displayName);
 
     return(head);
-        // <th className={className} onClick={params.onClick} >
-        //   { params.displayName }
-        // </th>
-
   }
 
 
@@ -75,42 +71,49 @@ render() {
     const { topStates, onHeaderClicked } = this.props
       if (topStates.length == 0) {
         return(
-          <h3>Rendering...</h3>
+          <h3>Select a Date to get started.</h3>
         )
       } else {
         var selectedField = this.props.selectedField
         return(
+        <div>
+          <div className="detailsBanner">
+            <span className="stateTitle">Top States for Census Categories</span><br/>
+          </div>
+
           <table className="statesTable">
-            <thead>
-            <tr>
-              <th key="rank" className="noClickHeader"></th>
-              <th key="state" className="noClickHeader"></th>
-              { this.createClickableHeader({
-                    displayName: "Population",
-                    code: "pop",
-                    onClick: {onHeaderClicked},
-                    selected: ("pop" == selectedField) })}
-              { this.createClickableHeader({
-                    displayName: "Net Growth",
-                    code: "popgrowth",
-                    onClick: {onHeaderClicked},
-                    selected: ("popgrowth" == selectedField) })}
-              { this.createClickableHeader({
-                    displayName: "Births",
-                    code: "births",
-                    onClick: {onHeaderClicked},
-                    selected: ("births" == selectedField) })}
-              { this.createClickableHeader({
-                    displayName: "Deaths",
-                    code: "deaths",
-                    onClick: {onHeaderClicked},
-                    selected: ("deaths" == selectedField) })}
-            </tr>
-            </thead>
-            <tbody>
-                { this.renderStateRows(topStates)}
-            </tbody>
-          </table>
+              <thead>
+              <tr>
+                <th key="rank" className="noClickHeader"></th>
+                <th key="state" className="noClickHeader"></th>
+                { this.createClickableHeader({
+                      displayName: "Population",
+                      code: "pop",
+                      onClick: {onHeaderClicked},
+                      selected: ("pop" == selectedField) })}
+                { this.createClickableHeader({
+                      displayName: "Net Growth",
+                      code: "popgrowth",
+                      onClick: {onHeaderClicked},
+                      selected: ("popgrowth" == selectedField) })}
+                { this.createClickableHeader({
+                      displayName: "Births",
+                      code: "births",
+                      onClick: {onHeaderClicked},
+                      selected: ("births" == selectedField) })}
+                { this.createClickableHeader({
+                      displayName: "Deaths",
+                      code: "deaths",
+                      onClick: {onHeaderClicked},
+                      selected: ("deaths" == selectedField) })}
+              </tr>
+              </thead>
+              <tbody>
+                  { this.renderStateRows(topStates)}
+              </tbody>
+            </table>
+          <span className="underTableInstructions">Click a State to See Its Consumer Complaints</span>
+        </div>
         )
 
       }

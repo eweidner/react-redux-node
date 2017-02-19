@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 import * as topStatesActions from '../actions/TopStatesActions';
@@ -23,12 +24,13 @@ class App extends Component {
     // initialStateQueryParams['limit'] = 10;
     var initialTopStates = [];
     return (
-      <div className="main-app-container">
-        <div className="main-app-nav">States and Stuff</div>
+      <div>
+        <Header/>
+        <div className="main-app-container">
+          <TopStates sortField='pop' year={2015} month={7} limit={10} topStates={initialTopStates} actions={topStatesActions} />
+          <Footer />
+        </div>
 
-        <TopStates sortField='pop' year={2015} month={7} limit={10} topStates={initialTopStates} actions={topStatesActions} />
-
-        <Footer />
       </div>
     );
   }

@@ -17,7 +17,7 @@ export default class ProductComplaintTable extends Component {
       cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
       cells.push(React.DOM.td({ key: product.product, style: {width: '200px'}}, product.product));
       cells.push(React.DOM.td({ key: "count"}, numberWithCommas(product.count)));
-      var row = React.DOM.tr({key: index}, cells);
+      var row = React.DOM.tr({key: index.toString(), onClick: this.props.onProductRowClicked}, cells);
       rows.push(row);
     });
     return(rows);
@@ -27,32 +27,36 @@ export default class ProductComplaintTable extends Component {
   render() {
     if (this.props.productComplaints.length > 0) {
       return(
-        <table id="productComplaintsTable">
-          <tbody>
-          <tr>
-            <td>
-              <h3>Products with most Consumer Complaints</h3>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <table className="statesTable">
-                <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Product Complaints</th>
-                  <th>Count</th>
-                </tr>
-                </thead>
-                <tbody>
-                { this.renderProductRows(this.props.productComplaints) }
-                </tbody>
-              </table>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      );
+        <div>
+          <table id="productComplaintsTable">
+            <tbody>
+            <tr>
+              <td>
+                <span className="tableTopHeader">Products with most Consumer Complaints</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table className="statesTable">
+                  <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Product Complaints</th>
+                    <th>Count</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  { this.renderProductRows(this.props.productComplaints) }
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <span className="underTableInstructions">Click a Product to See States with Most Complaints</span>
+        </div>
+
+    );
 
     } else {
       return(

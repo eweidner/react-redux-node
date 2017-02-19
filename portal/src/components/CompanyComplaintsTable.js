@@ -16,7 +16,7 @@ export default class CompanyComplaintsTable extends Component {
       cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
       cells.push(React.DOM.td({ key: company.name, style: {width: '350px'}}, company.company));
       cells.push(React.DOM.td({ key: "count"}, numberWithCommas(company.count)));
-      var row = React.DOM.tr({key: company + index.toString()}, cells);
+      var row = React.DOM.tr({key: company + index.toString(), onClick: this.props.onCompanyRowClicked}, cells);
       rows.push(row);
     });
     return(rows);
@@ -26,32 +26,35 @@ export default class CompanyComplaintsTable extends Component {
   render() {
     if (this.props.companyComplaints.length > 0) {
       return(
-        <table id="companyComplaintsTable">
-          <tbody>
-          <tr>
-            <td>
-              <h3>Companies with most Consumer Complaints</h3>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <table className="statesTable">
-                <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Company</th>
-                  <th>Count</th>
-                </tr>
-                </thead>
-                <tbody>
-                { this.renderCompanyRows(this.props.companyComplaints) }
-                </tbody>
-              </table>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      );
+        <div>
+          <table id="companyComplaintsTable">
+            <tbody>
+            <tr>
+              <td>
+                <span className="tableTopHeader">Companies with most Consumer Complaints</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table className="statesTable">
+                  <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Company</th>
+                    <th>Count</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  { this.renderCompanyRows(this.props.companyComplaints) }
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <span className="underTableInstructions">Click a Company to See States with Most Complaints</span>
+        </div>
+    );
 
     } else {
         return(

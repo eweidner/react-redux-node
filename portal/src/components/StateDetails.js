@@ -28,16 +28,16 @@ export default class StateDetails extends Component {
             <td colSpan="2" >
               <div className="detailsBanner">
                 <span className="stateTitle">{this.sectionTitle()}</span><br/>
-                <span className="stateSubTitle">Consumber Complaint Information</span>
+                <span className="stateSubTitle">Consumer Complaint Information</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>
-              <ProductComplaintsTable productComplaints={productComplaints }/>
+              <ProductComplaintsTable onProductRowClicked={this.props.onProductRowClicked} productComplaints={productComplaints }/>
             </td>
             <td>
-              <CompanyComplaintsTable companyComplaints={companyComplaints }/>
+              <CompanyComplaintsTable onCompanyRowClicked={this.props.onCompanyRowClicked} companyComplaints={companyComplaints }/>
             </td>
           </tr>
           </tbody>

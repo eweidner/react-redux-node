@@ -1,7 +1,11 @@
 import {  REQUEST_TOP_STATES, FETCH_TOP_STATES, RECEIVE_TOP_STATES,
   INVALIDATE_TOP_STATES, SELECT_SORTFIELD,
   REQUEST_COMPANY_COMPLAINTS, RECEIVE_COMPANY_COMPLAINTS, REQUEST_PRODUCT_COMPLAINTS,
-  RECEIVE_PRODUCT_COMPLAINTS, REQUEST_STATE_PROFILES, RECEIVE_STATE_PROFILES } from '../constants/ActionTypes';
+  RECEIVE_PRODUCT_COMPLAINTS, REQUEST_STATE_PROFILES, RECEIVE_STATE_PROFILES,
+  SWITCH_UI_TO_STATE_CENTRIC, SWITCH_UI_TO_PRODUCT_CENTRIC, SWITCH_UI_TO_COMPANY_CENTRIC,
+  RECEIVE_COMPANY_DETAILS, RECEIVE_PRODUCT_DETAILS, REQUEST_COMPANY_DETAILS, REQUEST_PRODUCT_DETAILS,
+  CLEAR_COMPLAINT_DETAILS
+} from '../constants/ActionTypes';
 
 import { API_HOST } from '../constants/Api';
 
@@ -40,7 +44,6 @@ function receiveTopStates(stateSelectionParams, json) {
         receivedAt: Date.now()
     }
 }
-
 
 export function fetchTopStates(params) {
     console.info("TopStatesActions.fetchTopStates invoked");
@@ -116,6 +119,13 @@ export function showStateCompanyComplaints(selectedStateCode) {
 }
 
 
+export function closeComplaintDetails() {
+  return {
+    type: CLEAR_COMPLAINT_DETAILS
+  };
+
+}
+
 export function requestStateProfiles() {
   console.info("TopStatesActions.requestStateProfiles.")
   return {
@@ -125,7 +135,6 @@ export function requestStateProfiles() {
 
 function receiveStateProfiles(json) {
   var stateProfiles = json.states;
-  console.info("TopStatesActions.receiveTopStates. json: " + Object.keys(json))
   return {
     type: RECEIVE_STATE_PROFILES,
     stateProfiles,
@@ -144,3 +153,64 @@ export function fetchStateProfiles(selectedStateCode) {
 
 }
 
+//----------------------------------------------------------------------------------------
+//  Company Details
+export function requestCompanyDetails(companySelectionParams) {
+  return {
+    type: REQUEST_COMPANY_DETAILS,
+    companySelectionParams
+  };
+}
+
+function receiveCompanyDetails(companySelectionParams, json) {
+  var companyStateComplaints = json.states;
+  console.info("TopStatesActions.receiveTopStates. json: " + Object.keys(json))
+  return {
+    type: RECEIVE_COMPANY_DETAILS,
+    companySelectionParams,
+    companyStateComplaints,
+    receivedAt: Date.now()
+  }
+}
+
+export function fetchCompanyDetails(params) {
+    var encCompany = encodeURIComponent(params.company);
+    var url = `${API_HOST}/api/complaints/states?year=${params.year}&months=${params.months}&month=${params.month}&company=${encCompany}&limit=${params.limit}`;
+    return dispatch => {
+          dispatch(requestCompanyDetails(params))
+          return fetch(url)
+              .then(response => response.json())
+              .then(json => dispatch(receiveCompanyDetails(params, json)))
+      }
+}
+
+
+//----------------------------------------------------------------------------------------
+//  Product Details
+export function requestProductDetails(productSelectionParams) {
+  return {
+    type: REQUEST_PRODUCT_DETAILS,
+    productSelectionParams
+  };
+}
+
+function receiveProductDetails(productSelectionParams, json) {
+  var productStateComplaints = json.states;
+  return {
+    type: RECEIVE_PRODUCT_DETAILS,
+    productSelectionParams,
+    productStateComplaints,
+    receivedAt: Date.now()
+  }
+}
+
+export function fetchProductDetails(params) {
+    var encProduct = encodeURIComponent(params.product);
+    var url = `${API_HOST}/api/complaints/states?year=${params.year}&months=${params.months}&month=${params.month}&product=${encProduct}&limit=${params.limit}`;
+    return dispatch => {
+      dispatch(requestProductDetails(params))
+      return fetch(url)
+        .then(response => response.json())
+        .then(json => dispatch(receiveProductDetails(params, json)))
+    }
+}

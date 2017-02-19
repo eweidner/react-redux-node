@@ -22,7 +22,7 @@ exports.encodeYearMonthPlusMonths = function(year, month, months) {
 
 // Found this at https://gist.github.com/mshafrir/2646763
 const STATES = {
-   // "AE": "Armed Forces Europe/Canada/Mid East", "AP": "Armed Forces Pacific", "AA": "Armed Forces Americas",
+    "AE": "Armed Forces Europe/Canada/Mid East", "AP": "Armed Forces Pacific", "AA": "Armed Forces Americas",
     "AL": "Alabama", "AK": "Alaska", "AS": "American Samoa", "AZ": "Arizona",
     "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
     "DC": "District Of Columbia", "FM": "Federated States Of Micronesia", "FL": "Florida", "GA": "Georgia", "GU": "Guam",
