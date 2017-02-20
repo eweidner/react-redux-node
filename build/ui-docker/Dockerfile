@@ -1,24 +1,8 @@
-FROM node:6.9.5
+FROM nginx:1.10.3
 
-ENV WEB_PORT 3000
 ENV NODE_ENV production
-ENV APP_BASE /var
-ENV APP_HOME /var/portal
 
-RUN mkdir -p $APP_BASE && chmod ogu+rwx $APP_BASE
-WORKDIR $APP_BASE
+ENV STATIC_FILE_DIR /usr/share/nginx/html
 
-USER node
-COPY portal.tgz $APP_BASE
-
-WORKDIR $APP_BASE
-RUN     tar xzvf portal.tgz
-
-COPY entrypoint.sh $APP_HOME
-COPY wait_for_port.sh  $APP_HOME
-
-WORKDIR $APP_HOME
-
-EXPOSE $WEB_PORT
-
-ENTRYPOINT ["/var/portal/entrypoint.sh"]
+COPY main.js $STATIC_FILE_DIR
+COPY index.html $STATIC_FILE_DIR

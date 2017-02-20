@@ -6,7 +6,6 @@ DOCKER_DIR=$BUILD_DIR/api-docker
 echo "Tar the application into Docker dir for copying to image ..."
 rm -rf $DOCKER_DIR/application.tgz
 tar -czv --exclude=application/node_modules \
-        --exclude=application/.*  \
         --exclude=application/tests  \
         -C ../ -f $DOCKER_DIR/application.tgz application/
 

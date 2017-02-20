@@ -49,11 +49,13 @@
   },
   "dependencies": {
     "d3": "4.6.0",
+    "express": "4.14.1",
     "react": "^0.14.3",
     "react-d3": "0.4.0",
-    "react-dom": "^0.14.3",
+    "react-dom": "0.14.8",
     "react-redux": "^4.1.1",
     "redux": "3.6.0",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "static-server": "2.0.4"
   }
 }
