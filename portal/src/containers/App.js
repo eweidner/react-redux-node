@@ -8,28 +8,20 @@ import * as topStatesActions from '../actions/TopStatesActions';
 import TopStates from '../components/TopStates';
 
 
-/**
- * It is common practice to have a 'Root' container/component require our main App (this one).
- * Again, this is because it serves to wrap the rest of our application with the Provider
- * component to make the Redux store available to the rest of the app.
- */
 class App extends Component {
   render() {
-    // we can use ES6's object destructuring to effectively 'unpack' our props
-    // const { topStatesAction, counter, counterActions } = this.props;
-    // var initialStateQueryParams = new Object();
-    // initialStateQueryParams['field'] = 'pop';
-    // initialStateQueryParams['year'] = 2015;
-    // initialStateQueryParams['month'] = 8;
-    // initialStateQueryParams['limit'] = 10;
     var initialTopStates = [];
     return (
       <div>
-        <Header/>
-        <div className="main-app-container">
-          <TopStates sortField='pop' year={2015} month={7} limit={10} topStates={initialTopStates} actions={topStatesActions} />
-          <Footer />
-        </div>
+            <div className="main-app-container">
+                <Header/>
+                <div className="underHeader">
+                </div>
+                <div className="content">
+                    <TopStates actions={topStatesActions} />
+                </div>
+                <Footer />
+            </div>
 
       </div>
     );

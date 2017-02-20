@@ -6,26 +6,48 @@ $accent-gray: #e1e0dd;
 $accent-black: #35342f;
 $accent-orange: #ec6b2d;
 $darkest-bg-color: #222222;
+$content-width: 1000px;
+$header_height: 90px;
 
 body {
-  background-color: $main-bg-color;
-  color: $accent-black;
-  display: flex;
-  justify-content: center;
-  font-family: 'Raleway', sans-serif;
+    background-color: $main-bg-color;
+    margin-top: 0em;
+    color: $accent-black;
+    display: flex;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+}
+
+#root {
+    width: 100%;
 }
 
 .mainHeader {
     background-color: #35342f;
     color: white;
-    width: 100%;
-    padding: 1em;
+    width: $content-width;
+    height: $header_height;
+    padding: 10px;
     position: fixed;
     opacity: 0.8;
 }
-.main-app-container {
-  padding-top: 7em;
+
+.underHeader {
+    padding: 10px;
+    height: $header_height;
 }
+
+.main-app-container {
+    padding-top: 0em;
+    width: $content-width;
+    margin: auto;
+}
+
+.content {
+    padding-top: 200px;
+    width: $content-width;
+}
+
 
 .complaintDetailsHolder {
   width: 800px;
