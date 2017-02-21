@@ -8,8 +8,18 @@ export default class PopulationPieChart extends Component {
     super(props);
   }
 
+    /*
+     *  Native D3 rendering of pie chart.
+     *  Using componentDidMount() to wait for parent div to exist before charting inside of it.
+     */
+    componentDidMount() {
+        this.drawPieChart();
+    }
 
-  componentDidUpdate(prevProps, prevState) {
+    /*
+     *  Native D3 rendering of pie chart.
+     */
+    drawPieChart() {
       if (this.props.topStates.length > 0) {
         document.getElementById("populationPieChart").innerHTML = "";
         var data = [];
@@ -23,7 +33,7 @@ export default class PopulationPieChart extends Component {
           radius = Math.min(width, height) / 2;
 
         var color = d3.scaleOrdinal()
-          .range(["#555577","#666688","#667788","#446688","#337788","#338888"]);
+          .range(["#666688","#667788","#446688","#337788","#338888","#555577","#559988","#2299aa","#228883","#556677"]);
 
         var pie = d3.pie()
           .value(function (d) {
@@ -67,17 +77,25 @@ export default class PopulationPieChart extends Component {
           })
           .style("fill", "#ddc");
       }
-
-
   }
 
-
-
+  /*
+   *  Render pie chart and label underneath it.
+   */
   render() {
       console.info("Render");
       return (
-        <div id="populationPieChart" className="popPieChartHolder"></div>
+          <div>
+                <div id="populationPieChart" className="popPieChartHolder"></div>
+                <div className='pieChartLabel'>State Comparison for {this.props.popFieldName}</div>
+          </div>
       );
   }
+
+
+    componentDidUpdate() {
+        this.drawPieChart();
+    }
+
 
 }

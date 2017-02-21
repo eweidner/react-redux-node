@@ -22,7 +22,7 @@ exports.importIfEmpty = function() {
                     console.info("Done importing complaint records");
                 });
             } else {
-                console.info("Complaint data saved, no import performed.");
+                console.info("Complaint data exists, no import performed.");
             }
         });
     });

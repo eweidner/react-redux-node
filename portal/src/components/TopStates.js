@@ -61,18 +61,21 @@ class TopStates extends Component {
 
     }
 
-  onCloseComplaintDetails(event) {
-    this.props.dispatch(closeComplaintDetails())
-  }
 
-  onStateRowClicked(event) {
+    /*
+     *  User was viewing complaints about prod or company and clicked close on the dialog.
+     */
+    onCloseComplaintDetails(event) {
+        this.props.dispatch(closeComplaintDetails())
+    }
+
+    onStateRowClicked(event) {
         var stateCode = event.target.parentNode.id;
         this.props.dispatch(showStateCompanyComplaints(stateCode))
         this.props.dispatch(showStateProductComplaints(stateCode))
     }
 
     onCompanyRowClicked(event) {
-        // I know this line is a hack
         var company = event.target.parentNode.children[1].outerText;
         var params = {
             year: this.props.stateSelectionParams.year - 6,
@@ -85,7 +88,6 @@ class TopStates extends Component {
     }
 
     onProductRowClicked(event) {
-        // I know this line is a hack
         var product = event.target.parentNode.children[1].outerText;
         var params = {
           year: this.props.stateSelectionParams.year - 6,
@@ -97,16 +99,13 @@ class TopStates extends Component {
         this.props.dispatch(fetchProductDetails(params))
     }
 
+    /*
+     *  Use component mounting to load initial states data based on default settings.
+     */
     componentDidMount() {
         console.info("componentDidMount");
         const { dispatch, sortField } = this.props
         this.props.dispatch(fetchStateProfiles())
-
-        if (this.props.stateSelectionParams) {
-           // this.props.dispatch(fetchTopStates(this.props.stateSelectionParams))
-        } else {
-           // dispatch(selectSortFieldAction('pop'))
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -145,6 +144,7 @@ class TopStates extends Component {
             this.props.dispatch(invalidateComplaintData())
         }
     }
+
     onStateSortFieldChange(event) {
         var nextField = event.target.id;
         var selectionParams = this.props.stateSelectionParams
@@ -159,10 +159,18 @@ class TopStates extends Component {
         }
     }
 
+    findCensusFieldNameForCode(code) {
+        var hash = {'pop': 'Population', 'popgrowth': 'Population Growth',
+                'births': 'Birth Rate', 'deaths': 'Death Rate'};
+        return hash[code];
+    }
+
     findStateProfileForCode(stateCode) {
         var foundProfile = null;
         return this.props.stateProfiles.find((profile) => { return (profile.code == stateCode)});
     }
+
+
 
     componentDidUpdate(prevProps, prevState) {
         if ((this.props.topStates.length == 0) && (this.props.stateSelectionParams)) {
@@ -183,10 +191,12 @@ class TopStates extends Component {
             <div className="complaintDetailsHolder">
               <CompanyComplaintDetails company={this.props.selectedCompany}
                                        companyStateComplaints={this.props.companyStateComplaints}
+                                       onStateRowClicked={this.onStateRowClicked}
                                        onCloseComplaintDetails={this.onCloseComplaintDetails}
               />
               <ProductComplaintDetails  product={this.props.selectedProduct}
                                         productStateComplaints={this.props.productStateComplaints}
+                                        onStateRowClicked={this.onStateRowClicked}
                                         onCloseComplaintDetails={this.onCloseComplaintDetails}
               />
             </div>
@@ -201,12 +211,20 @@ class TopStates extends Component {
                 <tbody>
                 <tr>
                   <td>
-                    <TopStatesTable   topStates={topStates} stateProfiles={stateProfiles} onStateRowClicked={this.onStateRowClicked}
+                    <TopStatesTable   topStates={topStates}
+                                      stateProfiles={stateProfiles}
+                                      onStateRowClicked={this.onStateRowClicked}
                                       onHeaderClicked={this.onStateSortFieldChange}
-                                      selectedState={selectedStateCode} selectedField={stateSelectionParams.field} />
+                                      selectedState={selectedStateCode}
+                                      selectedField={stateSelectionParams.field} />
                   </td>
                   <td>
-                    <PopulationPieChart sortField={this.props.sortField} topStates={this.props.topStates} />
+                    <PopulationPieChart
+                                sortField={this.props.stateSelectionParams.field}
+                                updatedAt={this.props.updatePieChartAt}
+                                productStateComplaints={this.props.productStateComplaints}
+                                popFieldName={this.findCensusFieldNameForCode(this.props.stateSelectionParams.field)}
+                                topStates={this.props.topStates} />
                   </td>
                 </tr>
                 </tbody>
@@ -225,7 +243,6 @@ class TopStates extends Component {
 }
 
 TopStates.propTypes = {
-    sortField: PropTypes.string,
     year: PropTypes.number,
     month: PropTypes.number,
     limit: PropTypes.number,
@@ -238,13 +255,14 @@ TopStates.propTypes = {
 function mapStateToProps(state) {
     const { selectedTopStatesSortField, topStatesReducer } = state;
     var selectedStateCode = state.stateDetailsReducer.selectedStateCode;
+    var importStatus = {};
     var newProps = {
         stateSelectionParams: state.topStatesReducer.stateSelectionParams,
         selectedStateCode: selectedStateCode,
         companyComplaints: state.stateDetailsReducer.companyComplaints,
         productComplaints: state.stateDetailsReducer.productComplaints,
-        sortField: state.selectedTopStatesSortField,
         topStates: state.topStatesReducer.topStates,
+        updatePieChartAt: state.topStatesReducer.updatePieChartAt,
         stateProfiles: state.stateProfilesReducer.stateProfiles,
         companyStateComplaints: state.companyDetailsReducer.companyStateComplaints,
         selectedCompany: state.companyDetailsReducer.selectedCompany,

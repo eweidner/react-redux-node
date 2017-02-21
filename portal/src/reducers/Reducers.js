@@ -4,7 +4,8 @@ import {  REQUEST_TOP_STATES, FETCH_TOP_STATES, RECEIVE_TOP_STATES,
           REQUEST_COMPANY_COMPLAINTS, RECEIVE_COMPANY_COMPLAINTS, REQUEST_PRODUCT_COMPLAINTS,
           RECEIVE_PRODUCT_COMPLAINTS, REQUEST_STATE_PROFILES, RECEIVE_STATE_PROFILES,
           SWITCH_UI_TO_STATE_CENTRIC, SWITCH_UI_TO_PRODUCT_CENTRIC, SWITCH_UI_TO_COMPANY_CENTRIC,
-          RECEIVE_COMPANY_DETAILS, RECEIVE_PRODUCT_DETAILS, CLEAR_COMPLAINT_DETAILS, INVALIDATE_COMPLAINT_DATA
+          RECEIVE_COMPANY_DETAILS, RECEIVE_PRODUCT_DETAILS, CLEAR_COMPLAINT_DETAILS, INVALIDATE_COMPLAINT_DATA,
+            RECEIVE_COMPLAINTS_IMPORT_STATUS, RECEIVE_CENSUS_IMPORT_STATUS
 } from '../constants/ActionTypes';
 
 
@@ -36,20 +37,16 @@ function stateDetailsReducer(state, action) {
         return initialState
     } else {
         switch (action.type) {
-            case INVALIDATE_COMPLAINT_DATA:
-                return Object.assign({}, state, {
-                    productComplaints: [],
-                    companyComplaints: []
-                })
             case REQUEST_COMPANY_COMPLAINTS:
                 return Object.assign({}, state, {
                     isFetchingCompanyComplaints: true,
-                    didInvalidateCompanyComplaints: false
+                    didInvalidateCompanyComplaints: false,
+
                 })
             case REQUEST_PRODUCT_COMPLAINTS:
                 return Object.assign({}, state, {
                     isFetchingProductComplaints: true,
-                    didInvalidateProductComplaints: false
+                    didInvalidateProductComplaints: false,
                 })
             case RECEIVE_PRODUCT_COMPLAINTS:
                 console.info("TopStatesReducer - receive complaint products");
@@ -67,6 +64,34 @@ function stateDetailsReducer(state, action) {
                 return state
         }
     }
+}
+
+/*
+ *  Handle state of census and complaints importation.
+ */
+function importStatusReducer(state, action) {
+    const initialState = {
+        censusImporting: false,
+        complaintsImporting: false
+    }
+    if (typeof state === 'undefined') {
+        return initialState
+    } else {
+        switch (action.type) {
+            case RECEIVE_COMPLAINTS_IMPORT_STATUS:
+                return Object.assign({}, state, {
+                    complaintsImporting: action.complaintsImporting
+                })
+            case RECEIVE_CENSUS_IMPORT_STATUS:
+                return Object.assign({}, state, {
+                    censusImporting: action.censusImporting
+                })
+            default:
+                return state
+        }
+    }
+
+
 }
 
 function stateProfilesReducer(state, action) {
@@ -114,7 +139,6 @@ function topStatesReducer(state, action) {
         switch (action.type) {
             case INVALIDATE_TOP_STATES:
                 return Object.assign({}, state, {
-                    didInvalidate: true,
                     stateSelectionParams: action.stateSelectionParams
                 })
             case REQUEST_TOP_STATES:
@@ -132,39 +156,15 @@ function topStatesReducer(state, action) {
                     lastUpdated: action.receivedAt,
                     stateSelectionParams: action.stateSelectionParams
                 })
+            case CLEAR_COMPLAINT_DETAILS:
+                return Object.assign({}, state, {
+                    updatePieChartAt: Date.now()
+                })
+
             default:
                 return state
         }
     }
-}
-
-
-function uiSettingsReducer(state, action) {
-    const initialState = {
-        mode: "state-centric"
-    }
-
-    if (typeof state === 'undefined') {
-        return initialState
-    } else {
-        switch (action.type) {
-            case SWITCH_UI_TO_STATE_CENTRIC:
-                return Object.assign({}, state, {
-                    mode: "state-centric"
-                })
-            case SWITCH_UI_TO_PRODUCT_CENTRIC:
-                return Object.assign({}, state, {
-                    mode: "product-centric"
-                })
-            case SWITCH_UI_TO_COMPANY_CENTRIC:
-                return Object.assign({}, state, {
-                    mode: "company-centric"
-                })
-            default:
-                return state
-        }
-    }
-
 }
 
 
@@ -182,7 +182,10 @@ function companyDetailsReducer(state, action) {
                     companyStateComplaints: [],
                     selectedCompany: null
                 })
-
+            case REQUEST_COMPANY_COMPLAINTS:
+                return Object.assign({}, state, {
+                    companyStateComplaints: [],
+                })
             case CLEAR_COMPLAINT_DETAILS:
                 return Object.assign({}, state, {
                     companyStateComplaints: [],
@@ -214,6 +217,10 @@ function productDetailsReducer(state, action) {
                     productStateComplaints: [],
                     selectedProduct: null
                 })
+            case REQUEST_PRODUCT_COMPLAINTS:
+                return Object.assign({}, state, {
+                    productStateComplaints: [],
+                })
             case CLEAR_COMPLAINT_DETAILS:
                 return Object.assign({}, state, {
                     productStateComplaints: [],
@@ -235,9 +242,9 @@ const rootReducer = combineReducers({
     topStatesReducer,
     stateDetailsReducer,
     stateProfilesReducer,
-    uiSettingsReducer,
     companyDetailsReducer,
-    productDetailsReducer
+    productDetailsReducer,
+    importStatusReducer
 });
 
 export default rootReducer;

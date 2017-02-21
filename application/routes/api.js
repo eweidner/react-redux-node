@@ -123,7 +123,7 @@ router.get('/census/topstates/', function(req, res, next) {
 /*
  *  Start import of census data.
  */
-router.get('/census/import', function(req, res, next) {
+router.post('/census/import', function(req, res, next) {
     var importer = require('../importers/census-import');
     importer.import();
     res.json({importing: true});
@@ -142,7 +142,7 @@ router.get('/census/import/status', function(req, res, next) {
 /*
  *  Start import of complaints data.
  */
-router.get('/complaints/import', function(req, res, next) {
+router.post('/complaints/import', function(req, res, next) {
     var importer = require('../importers/consumer-complaints-import');
     importer.import();
     res.json({importing: true});
@@ -155,8 +155,6 @@ router.get('/complaints/import/status', function(req, res, next) {
     var importer = require('../importers/consumer-complaints-import');
     res.json({importing: importer.inProgress()});
 });
-
-
 
 
 module.exports = router;

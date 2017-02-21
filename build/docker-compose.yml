@@ -3,21 +3,24 @@ version: "2"
 services:
   mongo:
     image: 'mongo:3.4.2'
+    container_name: mongo
     ports:
       - "27017"
 
-  states-api:
-    image: 'mijomoore/omb:2.0'
+  omb-api:
+    image: 'mijomoore/omb:2.2'
     command: "node bin/www"
+    container_name: 'omb-api'
     ports:
       - "3001:3001"
     links:
       - "mongo:mongo"
 
-  states-ui:
-    image: 'mijomoore/omb-portal:2.0'
+  omb-ui:
+    image: 'mijomoore/omb-portal:2.2'
+    container_name: 'omb-portal'
     ports:
       - "3000:80"
     links:
-      - "states-api:states-api"
+      - "omb-api:omb-api"
 

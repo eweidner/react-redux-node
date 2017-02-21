@@ -1,10 +1,11 @@
 import {  REQUEST_TOP_STATES, FETCH_TOP_STATES, RECEIVE_TOP_STATES,
-  INVALIDATE_TOP_STATES, SELECT_SORTFIELD,
-  REQUEST_COMPANY_COMPLAINTS, RECEIVE_COMPANY_COMPLAINTS, REQUEST_PRODUCT_COMPLAINTS,
-  RECEIVE_PRODUCT_COMPLAINTS, REQUEST_STATE_PROFILES, RECEIVE_STATE_PROFILES,
-  SWITCH_UI_TO_STATE_CENTRIC, SWITCH_UI_TO_PRODUCT_CENTRIC, SWITCH_UI_TO_COMPANY_CENTRIC,
-  RECEIVE_COMPANY_DETAILS, RECEIVE_PRODUCT_DETAILS, REQUEST_COMPANY_DETAILS, REQUEST_PRODUCT_DETAILS,
-  CLEAR_COMPLAINT_DETAILS, INVALIDATE_COMPLAINT_DATA
+    INVALIDATE_TOP_STATES, SELECT_SORTFIELD,
+    REQUEST_COMPANY_COMPLAINTS, RECEIVE_COMPANY_COMPLAINTS, REQUEST_PRODUCT_COMPLAINTS,
+    RECEIVE_PRODUCT_COMPLAINTS, REQUEST_STATE_PROFILES, RECEIVE_STATE_PROFILES,
+    SWITCH_UI_TO_STATE_CENTRIC, SWITCH_UI_TO_PRODUCT_CENTRIC, SWITCH_UI_TO_COMPANY_CENTRIC,
+    RECEIVE_COMPANY_DETAILS, RECEIVE_PRODUCT_DETAILS, REQUEST_COMPANY_DETAILS, REQUEST_PRODUCT_DETAILS,
+    CLEAR_COMPLAINT_DETAILS, INVALIDATE_COMPLAINT_DATA, RECEIVE_COMPLAINTS_IMPORT_STATUS, RECEIVE_CENSUS_IMPORT_STATUS,
+    REQUEST_COMPLAINT_IMPORT_STATUS, REQUEST_CENSUS_IMPORT_STATUS
 } from '../constants/ActionTypes';
 
 import { API_HOST } from '../constants/Api';
@@ -220,3 +221,56 @@ export function fetchProductDetails(params) {
         .then(json => dispatch(receiveProductDetails(params, json)))
     }
 }
+
+
+function receiveCensusImportStatus(json) {
+    var censusImporting = json['importing'];
+    return {
+        type: RECEIVE_CENSUS_IMPORT_STATUS,
+        censusImporting
+    }
+}
+
+function requestCensusImportStatus() {
+    return {
+        type: REQUEST_CENSUS_IMPORT_STATUS,
+    }
+}
+
+
+export function fetchCensusImportStatus() {
+    var url = `${API_HOST}/api/census/import/status`;
+    return dispatch => {
+        dispatch(requestCensusImportStatus())
+        return fetch(url)
+            .then(response => response.json())
+            .then(json => dispatch(receiveCensusImportStatus(json)))
+    }
+}
+
+function receiveComplaintsImportStatus(json) {
+    var complaintsImporting = json['importing'];
+    return {
+        type: RECEIVE_COMPLAINTS_IMPORT_STATUS,
+        complaintsImporting
+    }
+}
+
+
+function requestComplaintsImportStatus() {
+    return {
+        type: REQUEST_COMPLAINT_IMPORT_STATUS,
+    }
+}
+
+export function fetchComplaintsImportStatus() {
+    var url = `${API_HOST}/api/complaints/import/status`;
+    return dispatch => {
+        dispatch(requestComplaintsImportStatus())
+        return fetch(url)
+            .then(response => response.json())
+            .then(json => dispatch(receiveComplaintsImportStatus(json)))
+    }
+}
+
+

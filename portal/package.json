@@ -1,7 +1,7 @@
 {
   "name": "generator-simple-redux",
   "version": "1.0.0",
-  "description": "My simple redux application.",
+  "description": "Mike Moore's Coding Sample",
   "scripts": {
     "prestart": "npm install",
     "clean": "rimraf dist",

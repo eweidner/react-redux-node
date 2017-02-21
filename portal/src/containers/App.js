@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <div>
             <div className="main-app-container">
-                <Header/>
+                <Header  actions={topStatesActions} />
                 <div className="underHeader">
                 </div>
                 <div className="content">
@@ -29,9 +29,6 @@ class App extends Component {
 }
 
 App.propTypes = {
-    // counter: PropTypes.number.isRequired,
-    // counterActions: PropTypes.object.isRequired,
-    // topStatesActions: PropTypes.object.isRequired
 };
 
 /**
@@ -41,8 +38,6 @@ App.propTypes = {
  */
 function mapStateToProps(state) {
   return {
-    // counter: state.counter,
-    // stateQueryParams: state.stateQueryParams
   };
 }
 

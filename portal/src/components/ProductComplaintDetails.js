@@ -12,12 +12,12 @@ export default class ProductComplaintDetails extends Component {
   renderStateRows(productStateComplaints) {
     var rows = [];
     productStateComplaints.forEach((productStateComplaint, index) => {
-      var cells = [];
-      cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
-      cells.push(React.DOM.td({ key: "state", style: {width: '200px'}}, productStateComplaint.state_name));
-      cells.push(React.DOM.td({ key: "count"}, numberWithCommas(productStateComplaint.count)));
-      var row = React.DOM.tr({key: index}, cells);
-      rows.push(row);
+        var cells = [];
+        cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
+        cells.push(React.DOM.td({ key: "state", style: {width: '200px'}}, productStateComplaint.state_name));
+        cells.push(React.DOM.td({ key: "count"}, numberWithCommas(productStateComplaint.count)));
+        var row = React.DOM.tr({key: index, id: productStateComplaint.state, onClick: this.props.onStateRowClicked}, cells);
+        rows.push(row);
     });
     return(rows);
   }

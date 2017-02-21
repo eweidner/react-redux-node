@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 
 import numberWithCommas from '../Utils'
 
+
+/*
+ *  For a selected state, show top ten companies with highest cons. complaints.
+ */
 export default class CompanyComplaintsTable extends Component {
 
   constructor(props) {
@@ -11,13 +15,13 @@ export default class CompanyComplaintsTable extends Component {
   renderCompanyRows(companies) {
     var rows = [];
     companies.forEach((company, index) => {
-      // Used non-JSX to make it easier to assign a key.
-      var cells = [];
-      cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
-      cells.push(React.DOM.td({ key: company.name, style: {width: '350px'}}, company.company));
-      cells.push(React.DOM.td({ key: "count"}, numberWithCommas(company.count)));
-      var row = React.DOM.tr({key: company + index.toString(), onClick: this.props.onCompanyRowClicked}, cells);
-      rows.push(row);
+        // Used non-JSX to make it easier to assign a key.
+        var cells = [];
+        cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
+        cells.push(React.DOM.td({ key: company.name, style: {width: '420px'}}, company.company));
+        cells.push(React.DOM.td({ key: "count"}, numberWithCommas(company.count)));
+        var row = React.DOM.tr({key: company + index.toString(), onClick: this.props.onCompanyRowClicked}, cells);
+        rows.push(row);
     });
     return(rows);
   }

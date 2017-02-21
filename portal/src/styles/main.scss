@@ -23,13 +23,22 @@ body {
 }
 
 .mainHeader {
-    background-color: #35342f;
+    background-color: #000033;
     color: white;
     width: $content-width;
     height: $header_height;
     padding: 10px;
     position: fixed;
     opacity: 0.8;
+}
+
+.headerTable {
+    width: 100%;
+}
+
+.headerStatusCell {
+    width: 0px;
+    margin: auto;
 }
 
 .underHeader {
@@ -131,7 +140,7 @@ footer {
 }
 
 .statesTable tr:hover {
-  background-color: #bbbbbb;
+  background-color: #bbbbaa;
 }
 
 .clickableHeader {
@@ -141,7 +150,7 @@ footer {
 }
 
 .selectedClickableHeader {
-  background-color: #666666;
+  background-color: #888866;
   color: #ffffff;
   cursor: pointer;
 }
@@ -208,4 +217,43 @@ footer {
   border-radius: 4px;
   margin-left: 20px;
   cursor: pointer;
+}
+
+.pieChartLabel {
+    width: 100%;
+    text-align: center;
+    padding-left: 22px;
+}
+
+.importStatusHolder {
+    width: 250px;
+    border: 1px solid black;
+    border-radius: 3px;
+    font-size: 12px;
+    color: black;
+    background-color: #ddddcc;
+}
+
+.refreshImage {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.statusLoaded {
+    width: 100px;
+    text-align: center;
+    background-color: chartreuse;
+    border: 1px solid #222222;
+    color: black;
+    font-size: 11px;
+}
+
+.statusLoading {
+    width: 100px;
+    text-align: center;
+    background-color: #ddaaaa;
+    color: black;
+    border: 1px solid #222222;
+    font-size: 11px;
 }
