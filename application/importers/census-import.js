@@ -1,5 +1,7 @@
 const censusKey = "54e58ceb2cbb922837bde9d29ff87936a1eff60c";
+dbUtils = require('../database/db-utils');
 
+// Notes about API calls that work for each year.
 // 2015 - 2016
 // http://api.census.gov/data/2016/pep/components?get=BIRTHS,DEATHS,GEONAME&for=state:*&PERIOD=1&key=54e58ceb2cbb922837bde9d29ff87936a1eff60c
 // http://api.census.gov/data/2016/pep/population?get=POP,GEONAME&for=state:*&DATE=8&key=54e58ceb2cbb922837bde9d29ff87936a1eff60c
@@ -15,11 +17,10 @@ const censusKey = "54e58ceb2cbb922837bde9d29ff87936a1eff60c";
 // Pop and birth/death - Date seems to be in 2 month increments
 // http://api.census.gov/data/2013/pep/natstprc?get=POP,BIRTHS,DEATHS&for=state:*&DATE=6&key=54e58ceb2cbb922837bde9d29ff87936a1eff60c
 
-
 // 2012 - none of the above works
 
-dbUtils = require('../database/db-utils');
 
+// We will import
 const START_YEAR = 2013;
 const END_YEAR = 2016;
 
@@ -76,6 +77,8 @@ CensusImport.prototype.submitApiRequests = function(callback) {
     this.host = "api.census.gov";
     this.requests = [];
 
+    // Lucky for me, every year requires different census API calls to gather the same data.
+    //   Request a month at a time for each year
     for (var month = 1; month <= 12; month++) {
         this.requests.push({year: 2013, month: month, period_months: 1, mid_endpoint: "natstprc", fields: "STNAME,POP,BIRTHS,DEATHS", dateField: "DATE"});
         this.requests.push({year: 2014, month: month, period_months: 1, mid_endpoint: "natstprc", fields: "STNAME,POP,BIRTHS,DEATHS", dateField: "DATE"});
@@ -92,6 +95,9 @@ CensusImport.prototype.submitApiRequests = function(callback) {
 
 }
 
+/*
+    Initialize a hashes for a state to cover full date range being queried and saved here from the census.
+ */
 CensusImport.prototype.createStateHash = function(state) {
     this.dataHash[state] = new Object();
     for (var year = START_YEAR; year <= END_YEAR; year++) {
@@ -103,6 +109,10 @@ CensusImport.prototype.createStateHash = function(state) {
     }
 }
 
+
+/*
+    Write one particular state's census data, for specific month and year, to our storage hash.
+ */
 CensusImport.prototype.processStateRow = function(year, month, fields, stateRow) {
     var dataHash = this.dataHash;
     indexOfState = fields.indexOf("geoname");
@@ -126,6 +136,9 @@ CensusImport.prototype.processStateRow = function(year, month, fields, stateRow)
     });
 }
 
+/*
+    Write response of census api call to our hash of all census data.
+ */
 CensusImport.prototype.processRequest = function(year, month, dataOut) {
     fields = [];
     headerRow = dataOut[0];
@@ -144,7 +157,9 @@ CensusImport.prototype.isDone = function() {
     return ((this.numberOfRequestsCompleted == this.numberOfRequestsStarted) && (this.numberOfRecordsToSave == 0));
 }
 
-
+/*
+    Issue request for a date range and all states to census api and send results to processRequest.
+ */
 CensusImport.prototype.performRequest = function(request) {
     method = "GET";
     var endpoint = "/data/" + request.year + "/pep/" + request.mid_endpoint;
@@ -202,8 +217,8 @@ CensusImport.prototype.performRequest = function(request) {
 
 
 /*
-    Census api data has gaps in some fields.  Use simple aver bage around missing point to
-    fill it in.
+    Census api data has lots gaps in some fields for lots of months.
+     Function estimates missing data and fills it in on our data hash.
  */
 CensusImport.prototype.fillInMissingData = function(data, fieldName) {
     for (var key in data) {
@@ -241,6 +256,9 @@ CensusImport.prototype.fillInMissingData = function(data, fieldName) {
 }
 
 
+/*
+    Write the accumulated data hash to storage.
+ */
 CensusImport.prototype.writeToDatabase = function(censusImport) {
     censusDb = require('../database/census-db');
     dataHash = this.dataHash;

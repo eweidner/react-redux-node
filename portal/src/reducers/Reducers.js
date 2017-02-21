@@ -15,7 +15,6 @@ export function selectedTopStatesSortField(state = 'pop', action) {
     } else {
         switch (action.type) {
             case SELECT_SORTFIELD:
-                console.info("TopStates Reducer sortField changed to " + action.sortField)
                 return Object.assign({}, state, {
                     sortField: action.sortField
                 })
@@ -26,7 +25,6 @@ export function selectedTopStatesSortField(state = 'pop', action) {
 }
 
 function stateDetailsReducer(state, action) {
-    console.info("TopStatesReducer.stateDetailsReducer called");
     const initialState = {
         selectedStateCode: 'ca',
         productComplaints: [],

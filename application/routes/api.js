@@ -5,8 +5,9 @@ var express = require('express');
 var router = express.Router();
 var cors = require('cors');
 
-// Common for all API routes
-
+/*
+    Define all API routes for census/complaint info.
+ */
 router.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Request-Method', '*');
@@ -27,8 +28,6 @@ router.get('/', cors(), function(req, res, next) {
 
 
 // /api/complaints endpoint
-
-
 var complaintsQueries = require('../database/complaint-queries');
 
 router.get('/states', function(req, res, next) {

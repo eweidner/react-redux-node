@@ -5,9 +5,7 @@ const CONS_COMPL_API_ENDPOINT = "/resource/jhzv-w97w.json";
 const CONS_COMPLAINT_LIMIT = 200;
 
 var dbUtils = require('../database/db-utils');
-
 var _complaintsImporter = null;
-
 
 /*
  *  Import only if complaints collection is empty.
@@ -42,6 +40,9 @@ exports.import = function() {
     }
 }
 
+/*
+ * This is used by the api to notify clients that the import is either in progress or finished.
+ */
 exports.inProgress = function() {
     return ((_complaintsImporter != null) && (_complaintsImporter.isDone() == false));
 }
@@ -64,6 +65,10 @@ ConsumerComplaintsImport.prototype.isDone = function() {
 }
 
 
+/*
+ *   Called when complaints api returns response that should give us the next set of data to
+ *   process.
+ */
 ConsumerComplaintsImport.prototype.processRequest = function(offset, dataOut) {
     if (dataOut.length == CONS_COMPLAINT_LIMIT) {
         this.performRequest(offset + CONS_COMPLAINT_LIMIT);

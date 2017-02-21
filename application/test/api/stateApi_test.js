@@ -12,7 +12,7 @@ var censusDb = require("../../database/census-db");
 describe('State API', () => {
 
     describe('/GET /api/states', () => {
-        it('it should return all state names and code', (done) => {
+        it('it should return all state names and code as an array of hashes', (done) => {
             chai.request(server)
                 .get('/api/states')
                 .end((err, res) => {

@@ -109,7 +109,6 @@ class TopStates extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.info("componentWillReceiveProps - props were passed to this component");
         if (nextProps.sortField !== this.props.sortField) {
             console.info("  - sort field changed.");
             const { dispatch, sortField } = nextProps

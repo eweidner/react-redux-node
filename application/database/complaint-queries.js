@@ -10,7 +10,9 @@ var url = "mongodb://mongo/" + db_name;
 const db = require('monk')(url);
 const complaintsMonk = db.get('complaints');
 
-
+/*
+    Return states with the most complaints against the product or company passed.
+ */
 exports.states = function(params, callback) {
     var minDate = dbUtils.encodeYearMonth(params.year, params.month);
     var maxDate = dbUtils.encodeYearMonthPlusMonths(params.year, params.month, params.months);
@@ -26,6 +28,8 @@ exports.states = function(params, callback) {
     var matcher = {
         date: {$gte: minDate, $lte: maxDate}
     }
+
+    // Input params can specify a company or product that documents need to match.
     if (params.company) matcher['company'] = params.company;
     if (params.product) matcher['product'] = params.product;
 
@@ -36,11 +40,12 @@ exports.states = function(params, callback) {
             count: {$sum: 1}
         }
     });
+
+    // How many records returned and how to sort.
     aggregation.push({$limit: params.limit});
     aggregation.push({$sort: {"count": -1}});
     count:{$sum:1}
 
-    console.info("Performing state query aggregation.");
     complaintsMonk.aggregate(aggregation).then((res) => {
         var prettyResults = [];
         res.forEach( (result) => {
@@ -54,7 +59,9 @@ exports.states = function(params, callback) {
     });
 }
 
+/*
 
+ */
 exports.products = function(params, callback) {
     var minDate = dbUtils.encodeYearMonth(params.year, params.month);
     var maxDate = dbUtils.encodeYearMonthPlusMonths(params.year, params.month, params.months);
@@ -65,9 +72,11 @@ exports.products = function(params, callback) {
     var project = {date: true, state: true, product: true};
     aggregation.push({ $project: project });
 
+    // Matcher looks for documents inside of passed date range.
     var matcher = {
         date: {$gte: minDate, $lte: maxDate}
     }
+
     if (params.state) matcher['state'] = params.state;
     aggregation.push({$match: matcher});
     aggregation.push({
@@ -76,11 +85,15 @@ exports.products = function(params, callback) {
             count: {$sum: 1}
         }
     });
+
+    // How many records returned and how to sort.
     aggregation.push({$limit: params.limit});
     aggregation.push({$sort: {"count": -1}});
+
+    // Every record found increments the count by 1.
     count:{$sum:1}
     
-    console.info("Performing product query aggregation.");
+    // Do the aggregation
     complaintsMonk.aggregate(aggregation).then((res) => {
         var prettyResults = [];
         res.forEach((result) => {
@@ -118,7 +131,11 @@ exports.companies = function(params, callback) {
         }
     });
     aggregation.push({$limit: params.limit});
+
+    // Descending sort
     aggregation.push({$sort: {"count": -1}});
+
+    // Every record found increments the count by 1.
     count:{$sum:1}
 
     complaintsMonk.aggregate(aggregation).then((res) => {

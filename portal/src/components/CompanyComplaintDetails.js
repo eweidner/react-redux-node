@@ -38,7 +38,7 @@ export default class CompanyComplaintDetails extends Component {
                     <span className="stateTitle">{ this.props.company}</span>
                     <div
                       onClick={this.props.onCloseComplaintDetails}
-                      className="sectionCloseButton">Close</div>
+                      className="sectionCloseButton">X</div>
                     <br/>
                     <span className="stateSubTitle">States With Most Complaints Against Company</span>
                 </div>
