@@ -2,23 +2,44 @@
 
 This demonstration was tested on Chrome and Firefox browsers.
 
-Change directories to the build:
-* cd ./build
-* docker-compose up
+High level directory structure of repo:
+/application - code for Node JS.
+/portal - code for React/Redux portal.
+/build - scripts and Docker building environment
+
+### Deploying with docker-compose on your local machine
+
+From the repo root directory:
+```bash
+    > cd ./build
+    > docker-compose up
+```
 * Navigate your browser to: localhost:3000
-
-Docker compose will bring up three images:
-
-| What       | Image Name      | Container Name |
-| -----------|-----------------|----------------|
-| Mongo DB   | mongo           |                |
-| API Server | mijomoore/omb   | $8             |
+* API found on localhost:3001
 
 ### Data Loading
 The API Server container starts loading Census and Consumer Complaints data on start up as long as no data exists.
 The web portal to the data can be used while the data loads, but, of course, the displayed tables and chart will display incomplete data.
 
+### Docker Details
 
+Docker compose will bring up three images:
+
+* Mongo DB
+    - Docker Image: mongo:3.4.2
+    - Docker Container: mongo
+
+* API for Census/Consume Complaints
+    - Node JS application connecting to Mongo DB.
+    - Docker Image: omb-api:version
+    - Docker Container: omb-api
+    - Binds to host on port 3001
+    
+* Portal Server
+    - React application providing UI for examining data.
+    - Docker Image: omb-portal:version
+    - Docker Container: omb-portal
+    - Hard wired to connect to API container bound to localhost:3001
 
 
 
