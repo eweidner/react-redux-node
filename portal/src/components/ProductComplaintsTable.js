@@ -17,7 +17,7 @@ export default class ProductComplaintTable extends Component {
       cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
       cells.push(React.DOM.td({ key: product.product, style: {width: '200px'}}, product.product));
       cells.push(React.DOM.td({ key: "count"}, numberWithCommas(product.count)));
-      var row = React.DOM.tr({key: index.toString(), onClick: this.props.onProductRowClicked}, cells);
+      var row = React.DOM.tr({key: index.toString(), onClick: this.props.onProductRowClicked, id: product.product}, cells);
       rows.push(row);
     });
     return(rows);

@@ -1,4 +1,4 @@
-FROM nginx:1.10.3
+FROM nginx:1.11.10
 
 ENV NODE_ENV production
 

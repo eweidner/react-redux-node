@@ -76,7 +76,7 @@ class TopStates extends Component {
     }
 
     onCompanyRowClicked(event) {
-        var company = event.target.parentNode.children[1].outerText;
+        var company = event.target.parentNode.id;
         var params = {
             year: this.props.stateSelectionParams.year - 6,
             month: this.props.stateSelectionParams.month,
@@ -88,7 +88,7 @@ class TopStates extends Component {
     }
 
     onProductRowClicked(event) {
-        var product = event.target.parentNode.children[1].outerText;
+        var product = event.target.parentNode.id;
         var params = {
           year: this.props.stateSelectionParams.year - 6,
           month: this.props.stateSelectionParams.month,
@@ -178,7 +178,6 @@ class TopStates extends Component {
     }
 
     render() {
-        console.info("TopStates.render");
         const {   selectedStateCode, sortField,
                   year, month, topStates, isFetching,
                   lastUpdated, stateProfiles, stateSelectionParams } = this.props

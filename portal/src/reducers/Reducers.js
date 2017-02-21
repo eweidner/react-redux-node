@@ -47,13 +47,11 @@ function stateDetailsReducer(state, action) {
                     didInvalidateProductComplaints: false,
                 })
             case RECEIVE_PRODUCT_COMPLAINTS:
-                console.info("TopStatesReducer - receive complaint products");
                 return Object.assign({}, state, {
                     productComplaints: action.productComplaints,
                     selectedStateCode: action.productQueryParams.state
                 })
             case RECEIVE_COMPANY_COMPLAINTS:
-                console.info("TopStatesReducer - receive complaint companies");
                 return Object.assign({}, state, {
                     companyComplaints: action.companyComplaints,
                     selectedStateCode: action.companyQueryParams.state
@@ -118,7 +116,6 @@ function stateProfilesReducer(state, action) {
 }
 
 function topStatesReducer(state, action) {
-    console.info("TopStatesReducer.topStates called");
     const initialState = {
         didInvalidate: false,
         topStates: [],
@@ -146,7 +143,6 @@ function topStatesReducer(state, action) {
                     stateSelectionParams: action.stateSelectionParams
                 })
             case RECEIVE_TOP_STATES:
-                console.info("TopStatesReducer - receive top states");
                 return Object.assign({}, state, {
                     isFetching: false,
                     didInvalidate: false,
@@ -190,7 +186,6 @@ function companyDetailsReducer(state, action) {
                     selectedCompany: null
                 })
             case RECEIVE_COMPANY_DETAILS:
-                console.info("TopStatesReducer - receive top states");
                 return Object.assign({}, state, {
                     companyStateComplaints: action.companyStateComplaints,
                     selectedCompany: action.companySelectionParams.company

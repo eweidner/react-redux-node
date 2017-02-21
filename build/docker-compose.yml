@@ -8,7 +8,7 @@ services:
       - "27017"
 
   omb-api:
-    image: 'mijomoore/omb:2.2'
+    image: 'mijomoore/omb:2.3'
     command: "node bin/www"
     container_name: 'omb-api'
     ports:
@@ -17,7 +17,7 @@ services:
       - "mongo:mongo"
 
   omb-ui:
-    image: 'mijomoore/omb-portal:2.2'
+    image: 'mijomoore/omb-portal:2.3'
     container_name: 'omb-portal'
     ports:
       - "3000:80"

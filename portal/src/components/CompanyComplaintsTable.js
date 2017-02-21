@@ -20,7 +20,8 @@ export default class CompanyComplaintsTable extends Component {
         cells.push(React.DOM.td({ key: "1", style: {width: '50px'}}, (index + 1).toString()));
         cells.push(React.DOM.td({ key: company.name, style: {width: '420px'}}, company.company));
         cells.push(React.DOM.td({ key: "count"}, numberWithCommas(company.count)));
-        var row = React.DOM.tr({key: company + index.toString(), onClick: this.props.onCompanyRowClicked}, cells);
+        var row = React.DOM.tr({key: company + index.toString(), id: company.company,
+            onClick: this.props.onCompanyRowClicked}, cells);
         rows.push(row);
     });
     return(rows);
