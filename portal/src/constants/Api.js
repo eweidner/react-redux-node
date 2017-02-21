@@ -19,5 +19,8 @@ function getCookie(name) {
     return decodeURI(dc.substring(begin + prefix.length, end));
 }
 
+
+// Use cookie issued from server to determine the host of the API service.
+// We could possible default to "window.location.hostname" if we assume that the API is running
+// on the same host as the portal.
 export const API_HOST = getCookie('apihost') || 'http://localhost:3001';
-//export const API_HOST = getCookie('apihost');
