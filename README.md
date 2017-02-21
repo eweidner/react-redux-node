@@ -8,6 +8,7 @@ High level directory structure of repo:
 /build - scripts and Docker building environment
 
 ### Deploying with docker-compose on your local machine
+Deployment was tested with docker-compose version 1.11.1
 
 From the repo root directory:
 ```bash
