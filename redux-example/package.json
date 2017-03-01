@@ -1,0 +1,15 @@
+{
+  "name": "redux-example-1",
+  "version": "1.0.0",
+  "description": "Example 1 for Redux",
+  "main": "example_1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike Moore",
+  "license": "MIT",
+  "dependencies": {
+    "redux": "3.6.0",
+    "redux-thunk": "2.2.0"
+  }
+}
